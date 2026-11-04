@@ -152,7 +152,7 @@ export default function Home() {
     if (!siteState) return;
     const unlocked =
       gacha.key === 'profile-frame' ||
-      Date.now() >= unlockAt(siteState, gacha.day);
+      Date.now() >= unlockAt(siteState.eventStartDate, gacha.day);
     if (!unlocked) return;
     setActiveGacha(gacha); setDrawResult(null); setModal('draw');
   }
@@ -278,29 +278,48 @@ export default function Home() {
 
   return (
     <main className="site-shell">
-      <header className="topbar">
-        <div className="account-tools">
-          <span className="mini-balance"><Star size={14} fill="currentColor" /> {formatNumber(user.points)}P</span>
-          <span className="mini-balance token"><Coins size={14} /> {formatNumber(user.tokens)}T</span>
-          <button className="icon-button" title="닉네임 변경" onClick={() => { setNicknameValue(user.nickname); setModal('nickname'); }}><UserRound size={17} /></button>
-          <button className="icon-button" title="관리자" onClick={openAdmin}><Settings size={17} /></button>
-          <button className="icon-button logout-button" title="로그아웃" onClick={logout}><LogOut size={17} /></button>
-        </div>
-      </header>
+      
+<header className="topbar">
+  <div className="hero-greeting">
+    <span className="greeting-seal">M</span>
+    <span>
+      <b>{user.nickname}님, 메리 크리스마스!</b>
+      <small>행운의 장난감이 기다리고 있어요.</small>
+    </span>
+  </div>
+
+  <div className="account-tools">
+    <span className="mini-balance">
+      <Star size={14} fill="currentColor" /> {formatNumber(user.points)}P
+    </span>
+    <span className="mini-balance token">
+      <Coins size={14} /> {formatNumber(user.tokens)}T
+    </span>
+    <button className="icon-button" title="닉네임 변경" onClick={() => { setNicknameValue(user.nickname); setModal('nickname'); }}>
+      <UserRound size={17} />
+    </button>
+    <button className="icon-button" title="관리자" onClick={openAdmin}>
+      <Settings size={17} />
+    </button>
+    <button className="icon-button logout-button" title="로그아웃" onClick={logout}>
+      <LogOut size={17} />
+    </button>
+  </div>
+</header>
+
 
       <section className="hero-section">
         <div className="hero-copy">
           <p className="eyebrow">THE HOLIDAY TOY ROOM</p>
           <h1>마리의<br /><span>장난감 상자</span></h1>
-          <p>장난감을 모아<br />도감을 완성하세요.</p>
-          <div className="hero-greeting"><span className="greeting-seal">M</span><span><b>{user.nickname}님, 메리 크리스마스!</b><small>행운의 장난감이 기다리고 있어요.</small></span></div>
+          <p>장난감을 모아 도감을 완성하세요.</p>
         </div>
         <button className="hero-illustration" type="button" onClick={showCollection} aria-label="장난감 상자 도감 열기"><img src="/assets/mari-room.png" alt="마리의 방과 크리스마스 장난감 상자 — 누르면 도감이 열립니다" /></button>
         <div className="hero-ornament ornament-one">✦</div><div className="hero-ornament ornament-two">✧</div>
       </section>
 
       <section className="welcome-strip">
-        <div><span className="strip-star">✦</span><span><b>마리의 크리스마스 수집 대작전</b><small>가챠를 돌려 여섯 개의 장난감 세계를 완성해 보세요.</small></span></div>
+        <div><span className="strip-star">✦</span><span><b>마리의 장난감 수집 대작전</b><small>가챠를 돌려 여섯 개의 장난감 세계를 완성해 보세요.</small></span></div>
         <div className="currency-group">
           <div className="currency-card"><span className="currency-icon points"><Star size={16} fill="currentColor" /></span><small>보유 포인트</small><b>{formatNumber(user.points)} P</b></div>
           <div className="currency-card"><span className="currency-icon tokens"><Coins size={16} /></span><small>보유 토큰</small><b>{formatNumber(user.tokens)} T</b></div>
@@ -309,7 +328,7 @@ export default function Home() {
       </section>
 
       <section className="section-heading" id="gachas">
-        <div><p className="eyebrow">SIX LITTLE WORLDS</p><h2>오늘은 어떤 장난감을 만날까요?</h2><p>가챠는 이틀에 한 종류씩 열려요. 해금된 머신을 눌러 보세요.</p></div>
+        <div><p className="eyebrow">LITTLE WORLDS</p><h2>오늘은 어떤 장난감을 만날까요?</h2><p>가챠는 이틀에 한 종류씩 열려요. 해금된 머신을 눌러 보세요.</p></div>
         <div className="unlock-note"><LockKeyhole size={15} /> 첫 해금일 <b>{dateText(unlockAt(startDate, 0))}</b></div>
       </section>
 
@@ -320,7 +339,9 @@ export default function Home() {
             Date.now() >= unlockAt(startDate, gacha.day)
                   )
             .map((gacha, index) => {
-          const unlocked = Date.now() >= unlockAt(startDate, gacha.day);
+          const unlocked =
+            gacha.key === 'profile-frame' ||
+            Date.now() >= unlockAt(startDate, gacha.day);
           const count = siteState?.counts?.[gacha.key] || 0;
           return (
             <button key={gacha.key} className={`gacha-card theme-${gacha.color} ${unlocked ? 'is-unlocked' : 'is-locked'}`} onClick={() => openGacha(gacha)} disabled={!unlocked}>
