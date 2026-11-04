@@ -305,9 +305,9 @@ a { color: inherit; text-decoration: none; }
   }
 }
 
-/* 모바일에서만 사이트 제목 숨기기 */
+/* 모바일에서 사이트 제목, 설명, 아이콘 숨기기 */
 @media (max-width: 720px) {
-  .welcome-strip > div:first-child b {
+  .welcome-strip > div:first-child {
     display: none;
   }
 }
