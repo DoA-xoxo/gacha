@@ -281,11 +281,7 @@ export default function Home() {
       
 <header className="topbar">
   <div className="hero-greeting">
-    <span className="greeting-seal">M</span>
-    <span>
       <b>{user.nickname}님, 메리 크리스마스!</b>
-      <small>행운의 장난감이 기다리고 있어요.</small>
-    </span>
   </div>
 
   <div className="account-tools">
