@@ -73,14 +73,18 @@ a { color: inherit; text-decoration: none; }
 .hero-greeting {
   display: flex;
   align-items: center;
-  gap: 10px;
   margin: 0;
   padding: 0;
   border: none;
   background: transparent;
   box-shadow: none;
-  text-align: left;
-  flex-shrink: 0;
+  color: inherit;
+  font-size: 14px;
+}
+
+.hero-greeting .greeting-seal,
+.hero-greeting small {
+  display: none;
 }
 
 .hero-greeting > span:last-child {
