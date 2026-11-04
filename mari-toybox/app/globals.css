@@ -245,3 +245,29 @@ a { color: inherit; text-decoration: none; }
   font-size: 12px;
   font-weight: 400;
 }
+
+/* 상단 요소 전부 오른쪽 한 줄 정렬 */
+.topbar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 인사말이 왼쪽으로 밀리지 않도록 */
+.topbar .hero-greeting {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+/* 포인트·재화·아이콘도 한 줄 유지 */
+.topbar .account-tools {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 10px;
+  margin-left: 0;
+}
