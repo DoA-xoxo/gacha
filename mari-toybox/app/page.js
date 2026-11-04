@@ -12,8 +12,8 @@ const GACHA_LABELS = [
   ['toy-kingdom', '장난감 왕국', '호두까기 병정과 장난감 친구들'],
   ['sugar-shop', '설탕 요정의 과자점', '달콤한 사탕과 과자'],
   ['mouse-kingdom', '생쥐 왕국', '작은 왕국의 귀여운 보물'],
-  ['winter-warmth', '따뜻한 겨울 나기', '포근한 겨울 소품'],
-  ['profile-frame', '프로필 테두리', '나만의 초상화 액자'],
+  ['winter-warmth', '마리의 방', '포근한 겨울 소품'],
+  ['profile-frame', '프로필 테두리', '특별한 액자'],
 ];
 
 async function api(url, options = {}) {
@@ -53,7 +53,7 @@ export default function Home() {
   const [drawResult, setDrawResult] = useState(null);
   const [drawing, setDrawing] = useState(false);
   const [collection, setCollection] = useState(null);
-  const [topupValue, setTopupValue] = useState('1000');
+  const [topupValue, setTopupValue] = useState('100');
   const [convertValue, setConvertValue] = useState('100');
   const [nicknameValue, setNicknameValue] = useState('');
   const [notice, setNotice] = useState('');
@@ -107,10 +107,52 @@ export default function Home() {
     try { const data = await api('/api/collection'); setCollection(data); setModal('collection'); }
     catch (error) { setNotice(error.message); }
   }
+  
+  async function downloadItemPng(item) {
+  if (!item.image_url) {
+    setNotice('다운로드할 이미지가 없어요.');
+    return;
+  }
+
+  try {
+    const response = await fetch(item.image_url);
+    if (!response.ok) throw new Error();
+
+    const blob = await response.blob();
+    const bitmap = await createImageBitmap(blob);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = bitmap.width;
+    canvas.height = bitmap.height;
+
+    const context = canvas.getContext('2d');
+    context.drawImage(bitmap, 0, 0);
+    bitmap.close();
+
+    const pngBlob = await new Promise(resolve =>
+      canvas.toBlob(resolve, 'image/png')
+    );
+
+    if (!pngBlob) throw new Error();
+
+    const url = URL.createObjectURL(pngBlob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = `${item.name || 'toy'}.png`;
+    link.click();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch {
+    setNotice('이미지를 PNG로 변환하지 못했어요. 이미지 주소의 접근 권한을 확인해 주세요.');
+  }
+}
 
   async function openGacha(gacha) {
     if (!siteState) return;
-    const unlocked = Date.now() >= unlockAt(siteState.eventStartDate, gacha.day);
+    const unlocked =
+      gacha.key === 'profile-frame' ||
+      Date.now() >= unlockAt(siteState, gacha.day);
     if (!unlocked) return;
     setActiveGacha(gacha); setDrawResult(null); setModal('draw');
   }
@@ -237,12 +279,6 @@ export default function Home() {
   return (
     <main className="site-shell">
       <header className="topbar">
-        <button className="brand-lockup" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <span className="brand-bow">✧</span><span><b>마리의 장난감 상자</b><small>MARI’S TOY BOX</small></span>
-        </button>
-        <nav className="main-nav">
-          <a href="#gachas">가챠</a><button onClick={showCollection}>장난감 도감</button><button onClick={() => setModal('topup')}>포인트 상점</button>
-        </nav>
         <div className="account-tools">
           <span className="mini-balance"><Star size={14} fill="currentColor" /> {formatNumber(user.points)}P</span>
           <span className="mini-balance token"><Coins size={14} /> {formatNumber(user.tokens)}T</span>
@@ -256,8 +292,8 @@ export default function Home() {
         <div className="hero-copy">
           <p className="eyebrow">THE HOLIDAY TOY ROOM</p>
           <h1>마리의<br /><span>장난감 상자</span></h1>
-          <p>눈 내리는 크리스마스 밤,<br />오래도록 간직하고 싶은 작은 선물을 찾아보세요.</p>
-          <div className="hero-greeting"><span className="greeting-seal">M</span><span><b>{user.nickname}님, 메리 크리스마스!</b><small>오늘도 행운의 장난감이 기다리고 있어요.</small></span></div>
+          <p>장난감을 모아<br />도감을 완성하세요.</p>
+          <div className="hero-greeting"><span className="greeting-seal">M</span><span><b>{user.nickname}님, 메리 크리스마스!</b><small>행운의 장난감이 기다리고 있어요.</small></span></div>
         </div>
         <button className="hero-illustration" type="button" onClick={showCollection} aria-label="장난감 상자 도감 열기"><img src="/assets/mari-room.png" alt="마리의 방과 크리스마스 장난감 상자 — 누르면 도감이 열립니다" /></button>
         <div className="hero-ornament ornament-one">✦</div><div className="hero-ornament ornament-two">✧</div>
@@ -278,7 +314,12 @@ export default function Home() {
       </section>
 
       <section className="gacha-grid">
-        {gachas.map((gacha, index) => {
+          {gachas
+           .filter(gacha =>
+            gacha.key === 'profile-frame' ||
+            Date.now() >= unlockAt(startDate, gacha.day)
+                  )
+            .map((gacha, index) => {
           const unlocked = Date.now() >= unlockAt(startDate, gacha.day);
           const count = siteState?.counts?.[gacha.key] || 0;
           return (
@@ -292,13 +333,7 @@ export default function Home() {
         })}
       </section>
 
-      <section className="bottom-actions">
-        <button className="action-tile collection-tile" onClick={showCollection}><span className="action-icon"><BookOpen size={23} /></span><span><b>장난감 도감</b><small>모은 장난감을 한눈에 확인해요.</small></span><span className="tile-arrow">↗</span></button>
-        <button className="action-tile points-tile" onClick={() => setModal('topup')}><span className="action-icon"><Coins size={23} /></span><span><b>포인트 충전 & 토큰 교환</b><small>10P를 1T로 바꿔 가챠에 도전해요.</small></span><span className="tile-arrow">↗</span></button>
-        <button className="action-tile nickname-tile" onClick={() => { setNicknameValue(user.nickname); setModal('nickname'); }}><span className="action-icon"><UserRound size={23} /></span><span><b>닉네임 변경</b><small>이름을 바꿔도 수집 기록은 유지돼요.</small></span><span className="tile-arrow">↗</span></button>
-      </section>
-
-      <footer className="site-footer"><span>✦ MARI’S TOY BOX ✦</span><p>THE NUTCRACKER CHRISTMAS COLLECTION</p><small>작은 장난감들이 모여 마리의 겨울을 완성해요.</small></footer>
+      <footer className="site-footer"><span>✦ MARI’S TOY BOX ✦</span><p>THE NUTCRACKER CHRISTMAS COLLECTION</p><small>ⓒ胡桃劇場</small></footer>
 
       {modal && <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setModal(''); }}>
         {modal === 'draw' && activeGacha && <section className="modal-card draw-modal" role="dialog" aria-modal="true">
@@ -322,11 +357,59 @@ export default function Home() {
           <button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="modal-ribbon">MY TOY COLLECTION</div><p className="eyebrow">THE LITTLE TREASURE BOOK</p><h2>마리의 장난감 도감</h2>
           <p className="modal-intro">아직 만나지 못한 장난감은 물음표로 남아 있어요.</p>
           {collection ? <><div className="collection-progress"><div className="progress-track"><span style={{ width: `${collection.total ? collection.collected / collection.total * 100 : 0}%` }} /></div><b>{collection.collected} / {collection.total}</b></div>
-            {GACHA_LABELS.map(([key, name]) => {
-              const items = collection.items.filter(item => item.gacha_key === key);
-              if (!items.length) return null;
-              return <div className="collection-group" key={key}><h3>{name}<small>{items.filter(i => i.collection).length}/{items.length}</small></h3><div className="collection-grid">{items.map(item => <div className={`collection-item ${item.collection ? 'owned' : 'unknown'}`} key={item.id}>{item.collection ? <><ItemImage src={item.image_url} name={item.name} /><b>{item.name}</b>{item.collection.quantity > 1 && <small>×{item.collection.quantity}</small>}</> : <><span className="question-mark">?</span><b>미수집</b></>}</div>)}</div></div>;
-            })}
+{GACHA_LABELS.map(([key, name]) => {
+  const items = collection.items.filter(
+    item => item.gacha_key === key
+  );
+
+  if (!items.length) return null;
+
+  return (
+    <div className="collection-group" key={key}>
+      <h3>
+        {name}
+        <small>
+          {items.filter(item => item.collection).length}/{items.length}
+        </small>
+      </h3>
+
+      <div className="collection-grid">
+        {items.map(item => (
+          <div
+            className={`collection-item ${item.collection ? 'owned' : 'unknown'}`}
+            key={item.id}
+          >
+            {item.collection ? (
+              <>
+                <ItemImage src={item.image_url} name={item.name} />
+                <b>{item.name}</b>
+
+                {item.collection.quantity > 1 && (
+                  <small>×{item.collection.quantity}</small>
+                )}
+
+                {item.image_url && (
+                  <button
+                    type="button"
+                    className="download-png-button"
+                    onClick={() => downloadItemPng(item)}
+                  >
+                    PNG 다운로드
+                  </button>
+                )}
+              </>
+            ) : (
+              <>
+                <span className="question-mark">?</span>
+                <b>미수집</b>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+})}
             {!collection.total && <div className="empty-state"><PackageOpen size={34} /><b>아직 등록된 장난감이 없어요.</b><small>관리자가 상품을 등록하면 이곳에 도감이 만들어져요.</small></div>}
           </> : <div className="empty-state">도감을 불러오는 중...</div>}
         </section>}
@@ -340,7 +423,7 @@ export default function Home() {
 
         {modal === 'nickname' && <section className="modal-card compact-modal" role="dialog" aria-modal="true"><button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="modal-ribbon">A NEW NAME</div><p className="eyebrow">YOUR LITTLE IDENTITY</p><h2>닉네임 변경</h2><form className="shop-form" onSubmit={changeNickname}><label>현재 닉네임<input value={user.nickname} readOnly /></label><label>변경할 닉네임<input value={nicknameValue} maxLength={20} onChange={e => setNicknameValue(e.target.value)} placeholder="새로운 닉네임" required /></label><p className="field-hint">변경한 아이디는 기존 사이트에도 적용되며, 도감과 포인트·토큰은 그대로 유지돼요.</p><button className="primary-button full-button" disabled={busy}>변경하기</button></form></section>}
 
-        {modal === 'admin-login' && <section className="modal-card compact-modal"><button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="admin-seal"><Shield size={26} /></div><p className="eyebrow">PRIVATE ROOM</p><h2>관리자 입장</h2><p className="modal-intro">관리자 암호를 입력해 주세요.</p><form className="shop-form" onSubmit={submitAdminLogin}><label>관리자 암호<input type="password" value={adminPassword} onChange={e => setAdminPassword(e.target.value)} autoFocus required /></label>{adminError && <p className="error-text">{adminError}</p>}<button className="primary-button full-button" disabled={busy}>확인하고 입장하기</button></form></section>}
+        {modal === 'admin-login' && <section className="modal-card compact-modal"><button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="admin-seal"><Shield size={26} /></div><p className="eyebrow">PRIVATE ROOM</p><h2>관리자 입장</h2><p className="modal-intro">관리자 암호를 입력해 주세요.</p><form className="shop-form" onSubmit={submitAdminLogin}><label>관리자 암호<input type="password" value={adminPassword} onChange={e => setAdminPassword(e.target.value)} required /></label>{adminError && <p className="error-text">{adminError}</p>}<button className="primary-button full-button" disabled={busy}>확인하고 입장하기</button></form></section>}
 
         {modal === 'admin' && <section className="modal-card admin-modal"><button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="admin-header"><div><p className="eyebrow">THE OWNER’S DESK</p><h2><Settings size={22} /> 관리자 페이지</h2></div><button className="outline-button small" onClick={adminLogout}>관리자 로그아웃</button></div>
           <div className="admin-section"><div className="admin-section-title"><div><h3>가챠 상품 관리</h3><p>상품을 등록하고 이미지 URL과 등장 확률을 설정하세요.</p></div></div>
