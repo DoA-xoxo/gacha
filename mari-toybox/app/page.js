@@ -13,7 +13,7 @@ const GACHA_LABELS = [
   ['sugar-shop', '설탕 요정의 과자점', '달콤한 사탕과 과자'],
   ['mouse-kingdom', '생쥐 왕국', '작은 왕국의 귀여운 보물'],
   ['winter-warmth', '마리의 방', '포근한 겨울 소품'],
-  ['profile-frame', '프로필 테두리', '특별한 액자'],
+  ['profile-frame', '프로필 테두리', '나만의 프로필 장식 액자'],
 ];
 
 async function api(url, options = {}) {
@@ -281,7 +281,7 @@ export default function Home() {
       
 <header className="topbar">
   <div className="hero-greeting">
-      <b>{user.nickname}님, 메리 크리스마스!</b>
+      <b>{user.nickname} 님, 메리 크리스마스!</b>
   </div>
 
   <div className="account-tools">
@@ -350,7 +350,7 @@ export default function Home() {
         })}
       </section>
 
-      <footer className="site-footer"><span>✦ MARI’S TOY BOX ✦</span><p>THE NUTCRACKER CHRISTMAS COLLECTION</p><small>ⓒ胡桃劇場</small></footer>
+      <footer className="site-footer"><span>✦ MARI’S TOY BOX ✦</span><p>HODO THEATER CHRISTMAS COLLECTION</p><small>ⓒ胡桃劇場</small></footer>
 
       {modal && <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setModal(''); }}>
         {modal === 'draw' && activeGacha && <section className="modal-card draw-modal" role="dialog" aria-modal="true">
