@@ -68,6 +68,9 @@ a { color: inherit; text-decoration: none; }
   justify-content: space-between;
   align-items: center;
   gap: 16px;
+  padding-top: 20px;
+  padding-left: 0px;
+  padding-right: 16px;
 }
 
 .hero-greeting {
@@ -80,6 +83,7 @@ a { color: inherit; text-decoration: none; }
   box-shadow: none;
   color: inherit;
   font-size: 14px;
+  text-align: left: 12px;
 }
 
 .hero-greeting .greeting-seal,
