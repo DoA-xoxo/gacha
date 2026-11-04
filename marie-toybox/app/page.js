@@ -306,7 +306,7 @@ export default function Home() {
 
       <section className="hero-section">
         <div className="hero-copy">
-          <p className="eyebrow">THE HOLIDAY TOY ROOM</p>
+          <p className="eyebrow">HOLIDAY TOY CATALOG</p>
           <h1>마리의<br /><span>장난감 상자</span></h1>
           <p>장난감을 모아 도감을 완성하세요.</p>
         </div>
@@ -350,12 +350,12 @@ export default function Home() {
         })}
       </section>
 
-      <footer className="site-footer"><span>✦ MARI’S TOY BOX ✦</span><p>HODO THEATER CHRISTMAS COLLECTION</p><small>ⓒ胡桃劇場</small></footer>
+      <footer className="site-footer"><span>✦ MARIE’S TOY BOX ✦</span><p>HODO THEATER CHRISTMAS COLLECTION</p><small>ⓒ胡桃劇場</small></footer>
 
       {modal && <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setModal(''); }}>
         {modal === 'draw' && activeGacha && <section className="modal-card draw-modal" role="dialog" aria-modal="true">
           <button className="modal-close" onClick={() => setModal('')}><X size={18} /></button>
-          <div className="modal-ribbon">MARI’S GACHA</div>
+          <div className="modal-ribbon">MARIE’S GACHA</div>
           <p className="eyebrow">A LITTLE SURPRISE</p><h2>{activeGacha.name}</h2><p className="modal-intro">반짝이는 캡슐 속에서 어떤 친구가 나올까요?</p>
           {!drawResult ? <>
             <div className="draw-machine"><img src={activeGacha.asset} alt={`${activeGacha.name} 머신`} /></div>
