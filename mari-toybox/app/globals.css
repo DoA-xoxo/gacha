@@ -275,19 +275,32 @@ a { color: inherit; text-decoration: none; }
 /* 모바일 상단바 배치 */
 @media (max-width: 720px) {
   .topbar {
+    display: flex;
+    flex-wrap: wrap;
     justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
   }
 
+  /* 1줄: 인사말 */
   .topbar .hero-greeting {
-    margin-left: auto;
-    margin-right: 0;
-    width: auto;
-    flex-shrink: 0;
+    order: 1;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+    padding: 0;
     text-align: right;
   }
 
+  /* 2줄: 포인트, 토큰, 기타 아이콘 */
   .topbar .account-tools {
-    margin-left: 0;
-    flex-shrink: 0;
+    order: 2;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0;
+    gap: 8px;
   }
 }
