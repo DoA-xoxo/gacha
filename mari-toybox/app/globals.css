@@ -271,3 +271,23 @@ a { color: inherit; text-decoration: none; }
   gap: 10px;
   margin-left: 0;
 }
+
+/* 모바일 상단바 배치 */
+@media (max-width: 720px) {
+  .topbar {
+    justify-content: flex-end;
+  }
+
+  .topbar .hero-greeting {
+    margin-left: auto;
+    margin-right: 0;
+    width: auto;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .topbar .account-tools {
+    margin-left: 0;
+    flex-shrink: 0;
+  }
+}
