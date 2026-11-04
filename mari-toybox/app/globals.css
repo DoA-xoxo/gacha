@@ -76,6 +76,8 @@ a { color: inherit; text-decoration: none; }
 .hero-greeting {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  width: fit-content;
   margin: 0;
   padding: 0;
   border: none;
@@ -118,7 +120,14 @@ a { color: inherit; text-decoration: none; }
 .modal-close { position: absolute; z-index: 3; top: 17px; right: 17px; width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid #e3cbb0; border-radius: 50%; color: #8b6554; background: #fffaf2; }
 .modal-ribbon { position: relative; z-index: 1; width: fit-content; margin: -47px auto 20px; padding: 9px 24px; color: #fff3df; border: 1px solid #d3a96a; background: var(--wine); font: 700 9px 'DM Sans', sans-serif; letter-spacing: .16em; box-shadow: none; }
 .modal-card .eyebrow { margin-bottom: 7px; }
-.modal-card h2 { margin: 0; color: var(--wine); font: 700 25px 'Noto Serif KR', serif; letter-spacing: -.06em; }
+.modal-card h2 {
+  margin: 0;
+  color: var(--wine);
+  font: 700 25px 'Noto Serif KR', serif;
+  letter-spacing: -.06em;
+  line-height: 1.4;
+  text-align: center;
+}
 .modal-intro { margin: 8px 0 18px; color: #9b806d; font: 11px/1.7 'Noto Serif KR', serif; }
 .draw-modal { width: min(100%, 560px); }
 .draw-machine { width: 205px; height: 235px; margin: 0 auto 8px; }.draw-machine img { width: 100%; height: 100%; object-fit: contain; }
@@ -133,15 +142,16 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   justify-content: center;
   text-align: center;
+  line-height: 1;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
-.modal-card h2 {
-  margin: 0;
-  color: var(--wine);
-  font: 700 25px 'Noto Serif KR', serif;
-  letter-spacing: -.06em;
-  line-height: 1.4;
-  text-align: center;
+.modal-ribbon h2,
+.modal-ribbon span {
+  line-height: 1;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 /* Admin */
