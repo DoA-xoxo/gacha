@@ -26,6 +26,24 @@ async function api(url, options = {}) {
   return data;
 }
 
+async function uploadAdminImage(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch('/api/admin/upload-image', {
+    method: 'POST',
+    body: formData,
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.error || '이미지 업로드에 실패했어요.');
+  }
+
+  return data.url;
+}
+
 function formatNumber(value) {
   return Number(value || 0).toLocaleString('ko-KR');
 }
@@ -108,44 +126,17 @@ export default function Home() {
     catch (error) { setNotice(error.message); }
   }
   
-  async function downloadItemPng(item) {
+function downloadItemPng(item) {
   if (!item.image_url) {
     setNotice('다운로드할 이미지가 없어요.');
     return;
   }
 
-  try {
-    const response = await fetch(item.image_url);
-    if (!response.ok) throw new Error();
-
-    const blob = await response.blob();
-    const bitmap = await createImageBitmap(blob);
-
-    const canvas = document.createElement('canvas');
-    canvas.width = bitmap.width;
-    canvas.height = bitmap.height;
-
-    const context = canvas.getContext('2d');
-    context.drawImage(bitmap, 0, 0);
-    bitmap.close();
-
-    const pngBlob = await new Promise(resolve =>
-      canvas.toBlob(resolve, 'image/png')
-    );
-
-    if (!pngBlob) throw new Error();
-
-    const url = URL.createObjectURL(pngBlob);
-    const link = document.createElement('a');
-
-    link.href = url;
-    link.download = `${item.name || 'toy'}.png`;
-    link.click();
-
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  } catch {
-    setNotice('이미지를 PNG로 변환하지 못했어요. 이미지 주소의 접근 권한을 확인해 주세요.');
-  }
+  const link = document.createElement('a');
+  link.href = `/api/download-image?url=${encodeURIComponent(item.image_url)}&name=${encodeURIComponent(item.name || 'toy')}`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 }
 
   async function openGacha(gacha) {
@@ -450,7 +441,14 @@ export default function Home() {
           <div className="admin-section"><div className="admin-section-title"><div><h3>가챠 상품 관리</h3><p>상품을 등록하고 이미지 URL과 등장 확률을 설정하세요.</p></div></div>
             <form className="new-item-form" onSubmit={addAdminItem}><div className="admin-form-grid"><label>가챠 종류<select value={adminDraft.gacha_key} onChange={e => setAdminDraft(d => ({ ...d, gacha_key: e.target.value }))}>{GACHA_LABELS.map(([key,name]) => <option key={key} value={key}>{name}</option>)}</select></label><label>상품명<input value={adminDraft.name} onChange={e => setAdminDraft(d => ({ ...d, name: e.target.value }))} placeholder="예: 빨간 리본 곰인형" required /></label><label>확률 (%)<input type="number" min="0" max="100" step="0.001" value={adminDraft.probability} onChange={e => setAdminDraft(d => ({ ...d, probability: e.target.value }))} required /></label><label>등급<input value={adminDraft.rarity} onChange={e => setAdminDraft(d => ({ ...d, rarity: e.target.value }))} placeholder="일반 / 레어 / 스페셜" /></label><label className="wide-field">이미지 URL<input value={adminDraft.image_url} onChange={e => setAdminDraft(d => ({ ...d, image_url: e.target.value }))} placeholder="https://... (투명 PNG 권장)" /></label><label className="wide-field">설명<input value={adminDraft.description} onChange={e => setAdminDraft(d => ({ ...d, description: e.target.value }))} placeholder="상품 설명 (선택)" /></label></div><button className="primary-button add-item-button" disabled={savingItem}><Plus size={16} /> 상품 추가</button></form>
             <div className="probability-summary">{GACHA_LABELS.map(([key,name]) => <div key={key} className="probability-line"><span>{name}</span><b className={Math.abs((probabilityTotals[key] || 0) - 100) < 0.01 ? 'sum-good' : 'sum-warn'}>{Number(probabilityTotals[key] || 0).toFixed(3)}%</b><small>{Math.abs((probabilityTotals[key] || 0) - 100) < 0.01 ? '설정 완료' : '합계 100% 필요'}</small></div>)}</div>
-            <div className="admin-item-list">{adminItems.map(item => <div className="admin-item-row" key={item.id}><div className="admin-item-thumb">{item.image_url ? <img src={item.image_url} alt="" /> : <Gift size={20} />}</div><div className="admin-item-fields"><input aria-label="상품명" value={item.name} onChange={e => updateAdminLocal(item.id, { name: e.target.value })} /><div className="admin-item-inline"><input aria-label="이미지 URL" value={item.image_url || ''} onChange={e => updateAdminLocal(item.id, { image_url: e.target.value })} placeholder="이미지 URL" /><input aria-label="확률" type="number" min="0" max="100" step="0.001" value={item.probability} onChange={e => updateAdminLocal(item.id, { probability: e.target.value })} /></div><small>{GACHA_LABELS.find(g => g[0] === item.gacha_key)?.[1]} · {item.rarity}</small></div><div className="admin-item-actions"><button title="저장" onClick={() => saveAdminItem({ ...item, probability: Number(item.probability) })} disabled={savingItem}><Check size={16} /></button><button title="삭제" onClick={() => deleteAdminItem(item.id)}><Trash2 size={16} /></button></div></div>)}</div>
+            <div className="admin-item-list">{adminItems.map(item => <div className="admin-item-row" key={item.id}><div className="admin-item-thumb">{item.image_url ? <img src={item.image_url} alt="" /> : <Gift size={20} />}</div><div className="admin-item-fields"><input aria-label="상품명" value={item.name} onChange={e => updateAdminLocal(item.id, { name: e.target.value })} /><div className="admin-item-inline">
+  <input
+  aria-label="이미지 파일 교체"
+  type="file"
+  accept="image/png"
+  onChange={e => handleExistingItemImage(item.id, e)}
+/>
+                                                             <input aria-label="확률" type="number" min="0" max="100" step="0.001" value={item.probability} onChange={e => updateAdminLocal(item.id, { probability: e.target.value })} /></div><small>{GACHA_LABELS.find(g => g[0] === item.gacha_key)?.[1]} · {item.rarity}</small></div><div className="admin-item-actions"><button title="저장" onClick={() => saveAdminItem({ ...item, probability: Number(item.probability) })} disabled={savingItem}><Check size={16} /></button><button title="삭제" onClick={() => deleteAdminItem(item.id)}><Trash2 size={16} /></button></div></div>)}</div>
             {!adminItems.length && <div className="empty-state small-empty">등록된 상품이 없습니다.</div>}
           </div>
           <div className="admin-section"><div className="admin-section-title"><div><h3>포인트 충전 승인</h3><p>승인하면 신청한 회원의 포인트가 추가됩니다.</p></div><span className="pending-count">대기 {topups.filter(t => t.status === 'pending').length}건</span></div>
