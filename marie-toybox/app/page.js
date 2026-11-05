@@ -399,7 +399,7 @@ async function handleExistingItemImage(id, event) {
         </section>}
 
         {modal === 'collection' && <section className="modal-card collection-modal" role="dialog" aria-modal="true">
-          <button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="modal-ribbon">MY TOY COLLECTION</div><p className="eyebrow">MARIE's TOY COLLECTION</p><h2>마리의 장난감 도감</h2>
+          <button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="modal-ribbon">MY TOY COLLECTION</div><p className="eyebrow">MARIE'S TOY COLLECTION</p><h2>마리의 장난감 도감</h2>
           <p className="modal-intro">아직 만나지 못한 장난감은 물음표로 남아 있어요.</p>
           {collection ? <><div className="collection-progress"><div className="progress-track"><span style={{ width: `${collection.total ? collection.collected / collection.total * 100 : 0}%` }} /></div><b>{collection.collected} / {collection.total}</b></div>
 {GACHA_LABELS.map(([key, name]) => {
