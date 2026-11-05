@@ -213,6 +213,39 @@ function downloadItemPng(item) {
     } catch (error) { setNotice(error.message); }
     finally { setSavingItem(false); }
   }
+  async function handleNewItemImage(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  setSavingItem(true);
+  try {
+    const image_url = await uploadAdminImage(file);
+    setAdminDraft(d => ({ ...d, image_url }));
+    setNotice('상품 이미지가 업로드됐어요.');
+  } catch (error) {
+    setNotice(error.message);
+  } finally {
+    setSavingItem(false);
+    event.target.value = '';
+  }
+}
+
+async function handleExistingItemImage(id, event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  setSavingItem(true);
+  try {
+    const image_url = await uploadAdminImage(file);
+    updateAdminLocal(id, { image_url });
+    setNotice('이미지를 교체했어요. 저장 버튼을 눌러 적용해 주세요.');
+  } catch (error) {
+    setNotice(error.message);
+  } finally {
+    setSavingItem(false);
+    event.target.value = '';
+  }
+}
   async function addAdminItem(event) {
     event.preventDefault(); setSavingItem(true);
     try {
@@ -439,8 +472,34 @@ function downloadItemPng(item) {
         {modal === 'admin-login' && <section className="modal-card compact-modal"><button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="admin-seal"><Shield size={26} /></div><p className="eyebrow">PRIVATE ROOM</p><h2>관리자 입장</h2><p className="modal-intro">관리자 암호를 입력해 주세요.</p><form className="shop-form" onSubmit={submitAdminLogin}><label>관리자 암호<input type="password" value={adminPassword} onChange={e => setAdminPassword(e.target.value)} required /></label>{adminError && <p className="error-text">{adminError}</p>}<button className="primary-button full-button" disabled={busy}>확인하고 입장하기</button></form></section>}
 
         {modal === 'admin' && <section className="modal-card admin-modal"><button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="admin-header"><div><p className="eyebrow">THE OWNER’S DESK</p><h2><Settings size={22} /> 관리자 페이지</h2></div><button className="outline-button small" onClick={adminLogout}>관리자 로그아웃</button></div>
-          <div className="admin-section"><div className="admin-section-title"><div><h3>가챠 상품 관리</h3><p>상품을 등록하고 이미지 URL과 등장 확률을 설정하세요.</p></div></div>
-            <form className="new-item-form" onSubmit={addAdminItem}><div className="admin-form-grid"><label>가챠 종류<select value={adminDraft.gacha_key} onChange={e => setAdminDraft(d => ({ ...d, gacha_key: e.target.value }))}>{GACHA_LABELS.map(([key,name]) => <option key={key} value={key}>{name}</option>)}</select></label><label>상품명<input value={adminDraft.name} onChange={e => setAdminDraft(d => ({ ...d, name: e.target.value }))} placeholder="예: 빨간 리본 곰인형" required /></label><label>확률 (%)<input type="number" min="0" max="100" step="0.001" value={adminDraft.probability} onChange={e => setAdminDraft(d => ({ ...d, probability: e.target.value }))} required /></label><label>등급<input value={adminDraft.rarity} onChange={e => setAdminDraft(d => ({ ...d, rarity: e.target.value }))} placeholder="일반 / 레어 / 스페셜" /></label><label className="wide-field">이미지 URL<input value={adminDraft.image_url} onChange={e => setAdminDraft(d => ({ ...d, image_url: e.target.value }))} placeholder="https://... (투명 PNG 권장)" /></label><label className="wide-field">설명<input value={adminDraft.description} onChange={e => setAdminDraft(d => ({ ...d, description: e.target.value }))} placeholder="상품 설명 (선택)" /></label></div><button className="primary-button add-item-button" disabled={savingItem}><Plus size={16} /> 상품 추가</button></form>
+          <div className="admin-section"><div className="admin-section-title"><div><h3>가챠 상품 관리</h3><p>상품을 등록하고 PNG 이미지와 등장 확률을 설정하세요.</p></div></div>
+            <form className="new-item-form" onSubmit={addAdminItem}><div className="admin-form-grid"><label>가챠 종류<select value={adminDraft.gacha_key} onChange={e => setAdminDraft(d => ({ ...d, gacha_key: e.target.value }))}>{GACHA_LABELS.map(([key,name]) => <option key={key} value={key}>{name}</option>)}</select></label><label>상품명<input value={adminDraft.name} onChange={e => setAdminDraft(d => ({ ...d, name: e.target.value }))} placeholder="예: 빨간 리본 곰인형" required /></label><label>확률 (%)<input type="number" min="0" max="100" step="0.001" value={adminDraft.probability} onChange={e => setAdminDraft(d => ({ ...d, probability: e.target.value }))} required /></label><label>등급<input value={adminDraft.rarity} onChange={e => setAdminDraft(d => ({ ...d, rarity: e.target.value }))} placeholder="일반 / 레어 / 스페셜" /></label>
+          <label className="wide-field">
+  상품 이미지 (PNG)
+  <input
+    type="file"
+    accept="image/png"
+    onChange={handleNewItemImage}
+  />
+</label>
+
+{adminDraft.image_url && (
+  <div className="wide-field">
+    <small>업로드된 이미지 미리보기</small>
+    <img
+      src={adminDraft.image_url}
+      alt="상품 이미지 미리보기"
+      style={{
+        display: 'block',
+        width: '120px',
+        height: '120px',
+        objectFit: 'contain',
+        marginTop: '8px'
+      }}
+    />
+  </div>
+)}
+          <label className="wide-field">설명<input value={adminDraft.description} onChange={e => setAdminDraft(d => ({ ...d, description: e.target.value }))} placeholder="상품 설명 (선택)" /></label></div><button className="primary-button add-item-button" disabled={savingItem}><Plus size={16} /> 상품 추가</button></form>
             <div className="probability-summary">{GACHA_LABELS.map(([key,name]) => <div key={key} className="probability-line"><span>{name}</span><b className={Math.abs((probabilityTotals[key] || 0) - 100) < 0.01 ? 'sum-good' : 'sum-warn'}>{Number(probabilityTotals[key] || 0).toFixed(3)}%</b><small>{Math.abs((probabilityTotals[key] || 0) - 100) < 0.01 ? '설정 완료' : '합계 100% 필요'}</small></div>)}</div>
             <div className="admin-item-list">{adminItems.map(item => <div className="admin-item-row" key={item.id}><div className="admin-item-thumb">{item.image_url ? <img src={item.image_url} alt="" /> : <Gift size={20} />}</div><div className="admin-item-fields"><input aria-label="상품명" value={item.name} onChange={e => updateAdminLocal(item.id, { name: e.target.value })} /><div className="admin-item-inline">
   <input
