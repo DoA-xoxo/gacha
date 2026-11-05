@@ -253,7 +253,7 @@ export default function Home() {
       <div className="auth-art-wrap"><img className="auth-room-art" src="/assets/mari-room.png" alt="마리의 크리스마스 장난감 방" /></div>
       <section className="auth-card">
         <div className="crest-mark"><Crown size={23} /></div>
-        <p className="eyebrow">THE NUTCRACKER CHRISTMAS ROOM</p>
+        <p className="eyebrow">MARIE'S TOYBOX</p>
         <h1>마리의<br /><em>장난감 상자</em></h1>
         <p className="auth-subtitle">마리의 방에 오신 걸 환영해요.<br />오늘은 어떤 장난감이 기다리고 있을까요?</p>
         <div className="auth-tabs">
@@ -267,7 +267,7 @@ export default function Home() {
           {authError && <p className="error-text">{authError}</p>}
           <button className="primary-button full-button" disabled={busy}>{busy ? '잠시만요...' : authMode === 'login' ? '마리의 방 입장하기' : '새 장난감 상자 만들기'} <span>✦</span></button>
         </form>
-        <p className="auth-footnote">A LITTLE CHRISTMAS MAGIC AWAITS YOU</p>
+        <p className="auth-footnote">ⓒ胡桃劇場</p>
       </section>
       <div className="auth-snow snow-a">✧</div><div className="auth-snow snow-b">✦</div>
     </main>
