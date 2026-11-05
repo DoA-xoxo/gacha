@@ -437,7 +437,7 @@ async function handleExistingItemImage(id, event) {
                   <button
                     type="button"
                     className="primary-button full-button"
-                    style={{ fontSize: '12px' }}
+                    style={{ fontSize: '8px' }}
                     onClick={() => downloadItemPng(item)}
                   >
                     다운로드
