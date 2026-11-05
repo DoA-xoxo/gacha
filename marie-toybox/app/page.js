@@ -261,7 +261,7 @@ export default function Home() {
           <button className={authMode === 'register' ? 'selected' : ''} onClick={() => { setAuthMode('register'); setAuthError(''); }}>회원가입</button>
         </div>
         <form className="auth-form" onSubmit={submitAuth}>
-          <label>아이디(닉네임)<input value={authForm.nickname} maxLength={20} onChange={e => setAuthForm(v => ({ ...v, nickname: e.target.value }))} placeholder="마리" required /></label>
+          <label>닉네임<input value={authForm.nickname} maxLength={20} onChange={e => setAuthForm(v => ({ ...v, nickname: e.target.value }))} placeholder="마리" required /></label>
           <label>비밀번호<input type="password" minLength={authMode === 'register' ? 4 : 1} value={authForm.password} onChange={e => setAuthForm(v => ({ ...v, password: e.target.value }))} placeholder="비밀번호를 입력해 주세요" required /></label>
           {authMode === 'register' && <p className="field-hint">아이디는 1~20자, 비밀번호는 4자 이상 사용할 수 있어요.</p>}
           {authError && <p className="error-text">{authError}</p>}
