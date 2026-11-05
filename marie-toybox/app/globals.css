@@ -192,7 +192,44 @@ a { color: inherit; text-decoration: none; }
   .topbar { padding: 0 22px; }.main-nav { gap: 14px; }.hero-section { grid-template-columns: minmax(220px,.7fr) minmax(0,1.3fr); padding-left: 28px; }.hero-copy h1 { font-size: 34px; }.hero-illustration { min-height: 260px; }.hero-illustration img { max-height: 290px; }.gacha-card { min-height: 335px; padding: 16px 12px; }.machine-art-wrap { height: 220px; }.machine-title { font-size: 14px; }
 }
 @media (max-width: 720px) {
-  .auth-screen { grid-template-columns: 1fr; gap: 2px; padding: 30px 18px 48px; }.auth-art-wrap { max-width: 620px; margin: -12px auto -32px; }.auth-room-art { max-height: 35vh; }.auth-card { width: min(100%, 440px); padding: 34px 26px 26px; }.crest-mark { margin-top: -57px; }
+  .auth-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0;
+    min-height: 100svh;
+    padding: 35px 18px 48px;
+    overflow: visible;
+    background: #f4e9d9;
+  }
+
+  .auth-art-wrap {
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto 30px;
+    flex-shrink: 0;
+  }
+
+  .auth-room-art {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 42vh;
+    object-fit: contain;
+  }
+
+  .auth-card {
+    width: min(100%, 440px);
+    margin: 0 auto;
+    padding: 34px 26px 26px;
+    flex-shrink: 0;
+  }
+
+  .crest-mark {
+    margin-top: -57px;
+  }
+}
   .topbar { height: auto; min-height: 62px; flex-wrap: wrap; gap: 9px; padding: 10px 16px; }.brand-lockup b { font-size: 14px; }.brand-bow { width: 31px; height: 31px; }.main-nav { order: 3; width: 100%; justify-content: center; border-top: 1px solid #eee0cb; gap: 30px; }.main-nav a, .main-nav button { padding: 7px 0 1px; font-size: 10px; }.account-tools { margin-left: auto; gap: 4px; }.mini-balance { font-size: 9px; }.icon-button { width: 28px; height: 28px; }
   .hero-section { width: calc(100% - 28px); min-height: auto; grid-template-columns: 1fr; gap: 0; margin-top: 18px; padding: 24px 19px 0; }.hero-copy { padding: 0 4px; text-align: center; }.hero-copy h1 { font-size: 33px; }.hero-copy > p:not(.eyebrow) { margin: 9px 0 12px; font-size: 11px; }
   .hero-greeting { width: fit-content; margin: 0 auto; text-align: right; padding: 7px 10px; }
