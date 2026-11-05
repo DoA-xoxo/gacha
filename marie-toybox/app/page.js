@@ -254,7 +254,9 @@ export default function Home() {
       <section className="auth-card">
         <div className="crest-mark"><Crown size={23} /></div>
         <p className="eyebrow">MARIE'S TOYBOX</p>
-        <h1>마리의<br /><em>장난감 상자</em></h1>
+        <h1 className="auth-title-image">
+  <img src="/assets/title.png" alt="마리의 장난감 상자" />
+</h1>
         <p className="auth-subtitle">마리의 방에 오신 걸 환영해요.<br />오늘은 어떤 장난감이 기다리고 있을까요?</p>
         <div className="auth-tabs">
           <button className={authMode === 'login' ? 'selected' : ''} onClick={() => { setAuthMode('login'); setAuthError(''); }}>로그인</button>
@@ -307,7 +309,9 @@ export default function Home() {
       <section className="hero-section">
         <div className="hero-copy">
           <p className="eyebrow">HOLIDAY TOY CATALOG</p>
-          <h1>마리의<br /><span>장난감 상자</span></h1>
+          <h1 className="auth-title-image">
+  <img src="/assets/title.png" alt="마리의 장난감 상자" />
+</h1>
           <p>장난감을 모아 도감을 완성하세요.</p>
         </div>
         <button className="hero-illustration" type="button" onClick={showCollection} aria-label="장난감 상자 도감 열기"><img src="/assets/mari-room.png" alt="마리의 방과 크리스마스 장난감 상자 — 누르면 도감이 열립니다" /></button>
@@ -408,7 +412,7 @@ export default function Home() {
                 {item.image_url && (
                   <button
                     type="button"
-                    className="download-png-button"
+                    className="primary-button full-button"
                     onClick={() => downloadItemPng(item)}
                   >
                     PNG 다운로드
