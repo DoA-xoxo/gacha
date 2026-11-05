@@ -378,3 +378,17 @@ a { color: inherit; text-decoration: none; }
     display: none;
   }
 }
+
+/* 타이틀 이미지 크기 수정 */
+.auth-title-image {
+  width: 100%;
+  margin: 12px auto;
+  text-align: center;
+}
+
+.auth-title-image img {
+  display: block;
+  width: 25%;
+  height: auto;
+  margin: 0 auto;
+}
