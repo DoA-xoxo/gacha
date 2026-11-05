@@ -40,7 +40,7 @@ a { color: inherit; text-decoration: none; }
   background: #f4e9d9;
 }
 .auth-art-wrap {
-  max-width: 800px;
+  max-width: 1200px;
   margin: -12px auto 12px;
 }
 .auth-art-wrap::before { content: '✦'; position: absolute; top: 4%; right: 8%; color: var(--gold); font-size: 30px; }
