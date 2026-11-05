@@ -45,9 +45,31 @@ export async function PATCH(request) {
 export async function DELETE(request) {
   try {
     await requireAdmin();
+
     const { id } = await request.json();
-    const { error } = await getSupabaseAdmin().from('gacha_items').delete().eq('id', id);
-    if (error) throw error;
+
+    if (!id) return jsonError('상품 ID가 필요합니다.');
+
+    const supabase = getSupabaseAdmin();
+
+    // 1. 해당 상품의 기존 뽑기 기록 삭제
+    const { error: drawsError } = await supabase
+      .from('gacha_draws')
+      .delete()
+      .eq('item_id', id);
+
+    if (drawsError) throw drawsError;
+
+    // 2. 상품 삭제 (도감 기록은 CASCADE로 자동 삭제)
+    const { error: itemError } = await supabase
+      .from('gacha_items')
+      .delete()
+      .eq('id', id);
+
+    if (itemError) throw itemError;
+
     return Response.json({ ok: true });
-  } catch (error) { return jsonError(error.message); }
+  } catch (error) {
+    return jsonError(error.message);
+  }
 }
