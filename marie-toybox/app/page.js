@@ -404,9 +404,10 @@ function downloadItemPng(item) {
                   <button
                     type="button"
                     className="primary-button full-button"
+                    style={{ fontSize: '12px' }}
                     onClick={() => downloadItemPng(item)}
                   >
-                    PNG 다운로드
+                    다운로드
                   </button>
                 )}
               </>
