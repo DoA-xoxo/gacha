@@ -432,3 +432,11 @@ a { color: inherit; text-decoration: none; }
     padding: 4px 5px;
   }
 }
+
+
+/* Match the page background to Sugar Fairy Letter and Ticket Studio */
+html,
+body {
+  background: #FFF8EF !important;
+  background-image: none !important;
+}
