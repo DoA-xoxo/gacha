@@ -541,3 +541,11 @@ body,
   .admin-page-shell .topup-admin-row .status-label { grid-column: 1 / -1; justify-self: end; }
   .admin-login-card { margin-top: 8vh; padding: 27px 20px; }
 }
+
+/* 타이틀과 장난감 이미지가 들어간 박스도 사이트 배경색으로 통일 */
+.auth-card,
+.hero-section {
+  background: #FFF8EF !important;
+  background-color: #FFF8EF !important;
+  background-image: none !important;
+}
