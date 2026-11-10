@@ -434,9 +434,20 @@ a { color: inherit; text-decoration: none; }
 }
 
 
-/* Match the page background to Sugar Fairy Letter and Ticket Studio */
+/* Match every page-level background to Sugar Fairy Letter and Ticket Studio */
 html,
-body {
+body,
+.site-shell,
+.auth-screen,
+.loading-screen {
   background: #FFF8EF !important;
+  background-color: #FFF8EF !important;
   background-image: none !important;
+}
+
+@media (max-width: 720px) {
+  .auth-screen {
+    background: #FFF8EF !important;
+    background-color: #FFF8EF !important;
+  }
 }
