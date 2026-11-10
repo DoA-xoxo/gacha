@@ -187,7 +187,7 @@ function downloadItemPng(item) {
   }
 
   async function openAdmin() {
-    setAdminError(''); setAdminPassword(''); setModal('admin-login');
+    window.location.href = '/admin';
   }
   async function submitAdminLogin(event) {
     event.preventDefault(); setBusy(true); setAdminError('');
@@ -469,53 +469,8 @@ async function handleExistingItemImage(id, event) {
 
         {modal === 'nickname' && <section className="modal-card compact-modal" role="dialog" aria-modal="true"><button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="modal-ribbon">A NEW NAME</div><p className="eyebrow">YOUR LITTLE IDENTITY</p><h2>닉네임 변경</h2><form className="shop-form" onSubmit={changeNickname}><label>현재 닉네임<input value={user.nickname} readOnly /></label><label>변경할 닉네임<input value={nicknameValue} maxLength={20} onChange={e => setNicknameValue(e.target.value)} placeholder="새로운 닉네임" required /></label><p className="field-hint">변경한 아이디는 기존 사이트에도 적용되며, 도감과 포인트·토큰은 그대로 유지돼요.</p><button className="primary-button full-button" disabled={busy}>변경하기</button></form></section>}
 
-        {modal === 'admin-login' && <section className="modal-card compact-modal"><button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="admin-seal"><Shield size={26} /></div><p className="eyebrow">PRIVATE ROOM</p><h2>관리자 입장</h2><p className="modal-intro">관리자 암호를 입력해 주세요.</p><form className="shop-form" onSubmit={submitAdminLogin}><label>관리자 암호<input type="password" value={adminPassword} onChange={e => setAdminPassword(e.target.value)} required /></label>{adminError && <p className="error-text">{adminError}</p>}<button className="primary-button full-button" disabled={busy}>확인하고 입장하기</button></form></section>}
-
-        {modal === 'admin' && <section className="modal-card admin-modal"><button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="admin-header"><div><p className="eyebrow">THE OWNER’S DESK</p><h2><Settings size={22} /> 관리자 페이지</h2></div><button className="outline-button small" onClick={adminLogout}>관리자 로그아웃</button></div>
-          <div className="admin-section"><div className="admin-section-title"><div><h3>가챠 상품 관리</h3><p>상품을 등록하고 PNG 이미지와 등장 확률을 설정하세요.</p></div></div>
-            <form className="new-item-form" onSubmit={addAdminItem}><div className="admin-form-grid"><label>가챠 종류<select value={adminDraft.gacha_key} onChange={e => setAdminDraft(d => ({ ...d, gacha_key: e.target.value }))}>{GACHA_LABELS.map(([key,name]) => <option key={key} value={key}>{name}</option>)}</select></label><label>상품명<input value={adminDraft.name} onChange={e => setAdminDraft(d => ({ ...d, name: e.target.value }))} placeholder="예: 빨간 리본 곰인형" required /></label><label>확률 (%)<input type="number" min="0" max="100" step="5" value={adminDraft.probability} onChange={e => setAdminDraft(d => ({ ...d, probability: e.target.value }))} required /></label><label>등급<input value={adminDraft.rarity} onChange={e => setAdminDraft(d => ({ ...d, rarity: e.target.value }))} placeholder="일반 / 레어 / 스페셜" /></label>
-          <label className="wide-field">
-  상품 이미지 (PNG)
-  <input
-    type="file"
-    accept="image/png"
-    onChange={handleNewItemImage}
-  />
-</label>
-
-{adminDraft.image_url && (
-  <div className="wide-field">
-    <small>업로드된 이미지 미리보기</small>
-    <img
-      src={adminDraft.image_url}
-      alt="상품 이미지 미리보기"
-      style={{
-        display: 'block',
-        width: '120px',
-        height: '120px',
-        objectFit: 'contain',
-        marginTop: '8px'
-      }}
-    />
-  </div>
-)}
-          <label className="wide-field">설명<input value={adminDraft.description} onChange={e => setAdminDraft(d => ({ ...d, description: e.target.value }))} placeholder="상품 설명 (선택)" /></label></div><button className="primary-button add-item-button" disabled={savingItem}><Plus size={16} /> 상품 추가</button></form>
-            <div className="probability-summary">{GACHA_LABELS.map(([key,name]) => <div key={key} className="probability-line"><span>{name}</span><b className={Math.abs((probabilityTotals[key] || 0) - 100) < 0.01 ? 'sum-good' : 'sum-warn'}>{Number(probabilityTotals[key] || 0).toFixed(3)}%</b><small>{Math.abs((probabilityTotals[key] || 0) - 100) < 0.01 ? '설정 완료' : '합계 100% 필요'}</small></div>)}</div>
-            <div className="admin-item-list">{adminItems.map(item => <div className="admin-item-row" key={item.id}><div className="admin-item-thumb">{item.image_url ? <img src={item.image_url} alt="" /> : <Gift size={20} />}</div><div className="admin-item-fields"><input aria-label="상품명" value={item.name} onChange={e => updateAdminLocal(item.id, { name: e.target.value })} /><div className="admin-item-inline">
-  <input
-  aria-label="이미지 파일 교체"
-  type="file"
-  accept="image/png"
-  onChange={e => handleExistingItemImage(item.id, e)}
-/>
-                                                             <input aria-label="확률" type="number" min="0" max="100" step="0.001" value={item.probability} onChange={e => updateAdminLocal(item.id, { probability: e.target.value })} /></div><small>{GACHA_LABELS.find(g => g[0] === item.gacha_key)?.[1]} · {item.rarity}</small></div><div className="admin-item-actions"><button title="저장" onClick={() => saveAdminItem({ ...item, probability: Number(item.probability) })} disabled={savingItem}><Check size={16} /></button><button title="삭제" onClick={() => deleteAdminItem(item.id)}><Trash2 size={16} /></button></div></div>)}</div>
-            {!adminItems.length && <div className="empty-state small-empty">등록된 상품이 없습니다.</div>}
-          </div>
-          <div className="admin-section"><div className="admin-section-title"><div><h3>포인트 충전 승인</h3><p>승인하면 신청한 회원의 포인트가 추가됩니다.</p></div><span className="pending-count">대기 {topups.filter(t => t.status === 'pending').length}건</span></div>
-            <div className="topup-admin-list">{topups.map(row => <div className="topup-admin-row" key={row.id}><div><b>{row.nickname}</b><small>{new Date(row.created_at).toLocaleString('ko-KR')}</small></div><strong>{formatNumber(row.amount_points)}P</strong>{row.status === 'pending' ? <div className="review-actions"><button className="approve-button" onClick={() => reviewTopup(row.id, 'approved')}>승인</button><button className="reject-button" onClick={() => reviewTopup(row.id, 'rejected')}>거절</button></div> : <span className={`status-label ${row.status}`}>{row.status === 'approved' ? '승인 완료' : '거절됨'}</span>}</div>)}{!topups.length && <div className="empty-state small-empty">충전 신청이 없습니다.</div>}</div>
-          </div>
-        </section>}
       </div>}
+
 
       {notice && <div className="toast-note" role="status"><span>{notice}</span><button onClick={() => setNotice('')}><X size={15} /></button></div>}
     </main>
