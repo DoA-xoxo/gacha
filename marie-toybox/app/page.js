@@ -279,7 +279,7 @@ async function handleExistingItemImage(id, event) {
         <div className="crest-mark"><Crown size={23} /></div>
         <p className="eyebrow">MARIE'S TOYBOX</p>
         <h1 className="auth-title-image">
-  <img src="/assets/title.png" alt="마리의 장난감 상자" />
+  <img src="/assets/title1.png" alt="마리의 장난감 상자" />
 </h1>
         <p className="auth-subtitle">마리의 방에 오신 걸 환영해요.<br />오늘은 어떤 장난감이 기다리고 있을까요?</p>
         <div className="auth-tabs">
@@ -334,7 +334,7 @@ async function handleExistingItemImage(id, event) {
         <div className="hero-copy">
           <p className="eyebrow">HOLIDAY TOY CATALOG</p>
           <h1 className="auth-title-image">
-  <img src="/assets/title.png" alt="마리의 장난감 상자" />
+  <img src="/assets/title1.png" alt="마리의 장난감 상자" />
 </h1>
           <p>장난감을 모아 도감을 완성하세요.</p>
         </div>
