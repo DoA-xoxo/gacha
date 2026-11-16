@@ -352,7 +352,7 @@ async function handleExistingItemImage(id, event) {
       </section>
 
       <section className="section-heading" id="gachas">
-        <div><p className="eyebrow">LITTLE WORLDS</p><h2>오늘은 어떤 장난감을 만날까요?</h2><p>가챠는 이틀에 한 종류씩 열려요. 해금된 머신을 눌러 보세요.</p></div>
+        <div><p className="eyebrow">TOY GACHA</p><h2>오늘은 어떤 장난감을 만날까요?</h2><p>가챠는 이틀에 한 종류씩 열려요. 해금된 머신을 눌러 보세요.</p></div>
         <div className="unlock-note"><LockKeyhole size={15} /> 첫 해금일 <b>{dateText(unlockAt(startDate, 0))}</b></div>
       </section>
 
