@@ -12,6 +12,15 @@ const GACHA_LABELS = [
   ['profile-frame', '프로필 테두리'],
 ];
 
+const RARITY_OPTIONS = [
+  ['일반', 15],
+  ['유니크', 10],
+  ['레어', 5],
+  ['에픽', 4],
+  ['시크릿', 1],
+];
+const RARITY_PROBABILITY = Object.fromEntries(RARITY_OPTIONS);
+
 async function api(url, options = {}) {
   const response = await fetch(url, {
     ...options,
@@ -187,8 +196,8 @@ export default function AdminPage() {
               <div className="admin-form-grid">
                 <label>가챠 종류<select value={draft.gacha_key} onChange={e => setDraft(d => ({ ...d, gacha_key: e.target.value }))}>{GACHA_LABELS.map(([key, name]) => <option key={key} value={key}>{name}</option>)}</select></label>
                 <label>상품명<input value={draft.name} onChange={e => setDraft(d => ({ ...d, name: e.target.value }))} placeholder="예: 빨간 리본 곰인형" required /></label>
-                <label>확률 (%)<input type="number" min="0" max="100" step="5" value={draft.probability} onChange={e => setDraft(d => ({ ...d, probability: e.target.value }))} required /></label>
-                <label>등급<input value={draft.rarity} onChange={e => setDraft(d => ({ ...d, rarity: e.target.value }))} placeholder="일반 / 레어 / 스페셜" /></label>
+                <label>등급<select value={draft.rarity} onChange={e => setDraft(d => ({ ...d, rarity: e.target.value, probability: String(RARITY_PROBABILITY[e.target.value] ?? 15) }))}>{RARITY_OPTIONS.map(([name, probability]) => <option key={name} value={name}>{name} ({probability}%)</option>)}</select></label>
+                <label>확률 (%)<input type="number" value={draft.probability} readOnly /></label>
                 <label className="wide-field">상품 이미지 (PNG)<input type="file" accept="image/png" onChange={uploadNewImage} /></label>
                 {draft.image_url && <div className="wide-field"><small>업로드된 이미지 미리보기</small><img src={draft.image_url} alt="상품 이미지 미리보기" className="admin-new-preview" /></div>}
                 <label className="wide-field">설명<input value={draft.description} onChange={e => setDraft(d => ({ ...d, description: e.target.value }))} placeholder="상품 설명 (선택)" /></label>
@@ -219,9 +228,16 @@ export default function AdminPage() {
                   <input aria-label="상품명" value={item.name} onChange={e => setItems(rows => rows.map(row => row.id === item.id ? { ...row, name: e.target.value } : row))} />
                   <div className="admin-item-inline">
                     <input aria-label="이미지 파일 교체" type="file" accept="image/png" onChange={e => uploadExistingImage(item.id, e)} />
-                    <input aria-label="확률" type="number" min="0" max="100" step="0.001" value={item.probability} onChange={e => setItems(rows => rows.map(row => row.id === item.id ? { ...row, probability: e.target.value } : row))} />
+                    <input aria-label="확률 (%)" type="number" value={item.probability} readOnly />
                   </div>
-                  <small>{item.rarity}</small>
+                  <select aria-label="상품 등급" value={RARITY_PROBABILITY[item.rarity] !== undefined ? item.rarity : '__legacy__'} onChange={e => {
+                    const rarity = e.target.value;
+                    if (rarity === '__legacy__') return;
+                    setItems(rows => rows.map(row => row.id === item.id ? { ...row, rarity, probability: RARITY_PROBABILITY[rarity] } : row));
+                  }}>
+                    {RARITY_PROBABILITY[item.rarity] === undefined && <option value="__legacy__">{item.rarity || '등급 선택'}</option>}
+                    {RARITY_OPTIONS.map(([name, probability]) => <option key={name} value={name}>{name} ({probability}%)</option>)}
+                  </select>
                 </div>
                 <div className="admin-item-actions">
                   <button title="저장" onClick={() => saveItem(item)} disabled={savingItem}><Check size={16} /></button>
