@@ -380,7 +380,7 @@ async function handleExistingItemImage(id, event) {
           {!drawResult ? <>
             <div className="draw-machine"><img src={activeGacha.asset} alt={`${activeGacha.name} 머신`} /></div>
             <div className="draw-balance"><span><Coins size={15} /> 보유 토큰 <b>{formatNumber(user.tokens)}T</b></span><small>1 회 뽑기 1 T · 10 회 뽑기 10 T</small></div>
-            <div className="draw-buttons"><button className="primary-button" disabled={drawing || user.tokens < 1} onClick={() => runDraw(1)}>{drawing ? '뽑는 중...' : '1회 뽑기 · 1T'}</button><button className="gold-button" disabled={drawing || user.tokens < 10} onClick={() => runDraw(10)}>{drawing ? '뽑는 중...' : '10회 뽑기 · 10T'}</button></div>
+            <div className="draw-buttons"><button className="primary-button" disabled={drawing || user.tokens < 1} onClick={() => runDraw(1)}>{drawing ? '뽑는 중...' : '1 회 뽑기 · 1 T'}</button><button className="gold-button" disabled={drawing || user.tokens < 10} onClick={() => runDraw(10)}>{drawing ? '뽑는 중...' : '10 회 뽑기 · 10 T'}</button></div>
             {user.tokens < 10 && <p className="field-hint">토큰이 부족하다면 포인트를 토큰으로 교환해 주세요.</p>}
           </> : <>
             <div className="result-heading"><span>✦</span><b>{drawResult.items.length} 개의 장난감을 만났어요!</b><span>✦</span></div>
