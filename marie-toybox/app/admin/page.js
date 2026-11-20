@@ -196,7 +196,7 @@ export default function AdminPage() {
               <div className="admin-form-grid">
                 <label>가챠 종류<select value={draft.gacha_key} onChange={e => setDraft(d => ({ ...d, gacha_key: e.target.value }))}>{GACHA_LABELS.map(([key, name]) => <option key={key} value={key}>{name}</option>)}</select></label>
                 <label>상품명<input value={draft.name} onChange={e => setDraft(d => ({ ...d, name: e.target.value }))} placeholder="예: 빨간 리본 곰인형" required /></label>
-                <label>등급<select value={draft.rarity} onChange={e => setDraft(d => ({ ...d, rarity: e.target.value, probability: String(RARITY_PROBABILITY[e.target.value] ?? 15) }))}>{RARITY_OPTIONS.map(([name, probability]) => <option key={name} value={name}>{name} ({probability}%)</option>)}</select></label>
+                <label>등급<select value={draft.rarity} onChange={e => setDraft(d => ({ ...d, rarity: e.target.value, probability: String(RARITY_PROBABILITY[e.target.value] ?? 15) }))}>{RARITY_OPTIONS.map(([name, probability]) => <option key={name} value={name}>{name}</option>)}</select></label>
                 <label>확률 (%)<input type="number" value={draft.probability} readOnly /></label>
                 <label className="wide-field">상품 이미지 (PNG)<input type="file" accept="image/png" onChange={uploadNewImage} /></label>
                 {draft.image_url && <div className="wide-field"><small>업로드된 이미지 미리보기</small><img src={draft.image_url} alt="상품 이미지 미리보기" className="admin-new-preview" /></div>}
@@ -236,7 +236,7 @@ export default function AdminPage() {
                     setItems(rows => rows.map(row => row.id === item.id ? { ...row, rarity, probability: RARITY_PROBABILITY[rarity] } : row));
                   }}>
                     {RARITY_PROBABILITY[item.rarity] === undefined && <option value="__legacy__">{item.rarity || '등급 선택'}</option>}
-                    {RARITY_OPTIONS.map(([name, probability]) => <option key={name} value={name}>{name} ({probability}%)</option>)}
+                    {RARITY_OPTIONS.map(([name, probability]) => <option key={name} value={name}>{name}</option>)}
                   </select>
                 </div>
                 <div className="admin-item-actions">
