@@ -307,15 +307,15 @@ async function handleExistingItemImage(id, event) {
     <button className="icon-button" title="닉네임 변경" onClick={() => { setNicknameValue(user.nickname); setModal('nickname'); }}>
       <UserRound size={17} />
     </button>
-    <button className="icon-button" title="관리자" onClick={openAdmin}>
-      <Settings size={17} />
-    </button>
     <button className="icon-button logout-button" title="로그아웃" onClick={logout}>
       <LogOut size={17} />
     </button>
   </div>
 </header>
 
+<button className="admin-fab" type="button" title="관리자 설정" aria-label="관리자 설정" onClick={openAdmin}>
+  <Settings size={18} />
+</button>
 
       <section className="hero-section">
         <div className="hero-copy">
