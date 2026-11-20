@@ -667,26 +667,31 @@ body,
   box-shadow: 0 0 0 3px rgba(199,154,87,.13);
 }
 .admin-gacha-total {
-  min-height: 65px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-content: center;
-  gap: 5px 12px;
-  padding: 10px 14px;
+  height: 44px;
+  min-height: 44px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 14px;
   border: 1px solid #e5d2b9;
   background: #fffaf3;
 }
 .admin-gacha-total > span {
   color: #947b6d;
   font-size: 10px;
+  white-space: nowrap;
 }
 .admin-gacha-total > b {
+  margin-left: auto;
   font: 700 14px 'DM Sans', sans-serif;
+  white-space: nowrap;
 }
 .admin-gacha-total > small {
-  grid-column: 1 / -1;
   color: #a18a72;
   font-size: 9px;
+  white-space: nowrap;
 }
 @media (max-width: 720px) {
   .admin-gacha-filter {
@@ -696,8 +701,5 @@ body,
   }
   .admin-gacha-filter > label {
     gap: 8px;
-  }
-  .admin-gacha-total {
-    min-height: 60px;
   }
 }
