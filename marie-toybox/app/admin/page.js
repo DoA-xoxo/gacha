@@ -49,7 +49,7 @@ export default function AdminPage() {
   const [error, setError] = useState('');
   const [items, setItems] = useState([]);
   const [selectedGacha, setSelectedGacha] = useState('christmas-gift');
-  const [draft, setDraft] = useState({ gacha_key: 'christmas-gift', name: '', description: '', image_url: '', probability: '0', rarity: '일반', sort_order: '0' });
+  const [draft, setDraft] = useState({ gacha_key: 'christmas-gift', name: '', image_url: '', probability: '0', rarity: '일반', sort_order: '0' });
   const [busy, setBusy] = useState(false);
   const [savingItem, setSavingItem] = useState(false);
   const [authorized, setAuthorized] = useState(false);
@@ -140,7 +140,7 @@ export default function AdminPage() {
       const body = { ...draft, probability: Number(draft.probability), sort_order: Number(draft.sort_order) };
       const data = await api('/api/admin/items', { method: 'POST', body: JSON.stringify(body) });
       setItems(rows => [...rows, data.item]);
-      setDraft(d => ({ ...d, name: '', description: '', image_url: '', probability: '0' }));
+      setDraft(d => ({ ...d, name: '', image_url: '', probability: '0' }));
       setNotice('새 상품을 등록했어요.');
     } catch (e) { setNotice(e.message); }
     finally { setSavingItem(false); }
@@ -200,7 +200,6 @@ export default function AdminPage() {
                 <label>확률 (%)<input type="number" value={draft.probability} readOnly /></label>
                 <label className="wide-field">상품 이미지 (PNG)<input type="file" accept="image/png" onChange={uploadNewImage} /></label>
                 {draft.image_url && <div className="wide-field"><small>업로드된 이미지 미리보기</small><img src={draft.image_url} alt="상품 이미지 미리보기" className="admin-new-preview" /></div>}
-                <label className="wide-field">설명<input value={draft.description} onChange={e => setDraft(d => ({ ...d, description: e.target.value }))} placeholder="상품 설명 (선택)" /></label>
               </div>
               <button className="primary-button add-item-button" disabled={savingItem}><Plus size={16} /> 상품 추가</button>
             </form>
