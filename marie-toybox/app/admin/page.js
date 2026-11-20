@@ -195,23 +195,36 @@ export default function AdminPage() {
               <button className="primary-button add-item-button" disabled={savingItem}><Plus size={16} /> 상품 추가</button>
             </form>
             <div className="probability-summary">{GACHA_LABELS.map(([key, name]) => <div key={key} className="probability-line"><span>{name}</span><b className={Math.abs((probabilityTotals[key] || 0) - 100) < 0.01 ? 'sum-good' : 'sum-warn'}>{Number(probabilityTotals[key] || 0).toFixed(3)}%</b><small>{Math.abs((probabilityTotals[key] || 0) - 100) < 0.01 ? '설정 완료' : '합계 100% 필요'}</small></div>)}</div>
-            <div className="admin-item-list">
-              {items.map(item => <div className="admin-item-row" key={item.id}>
-                <div className="admin-item-thumb">{item.image_url ? <img src={item.image_url} alt="" /> : <Gift size={20} />}</div>
-                <div className="admin-item-fields">
-                  <input aria-label="상품명" value={item.name} onChange={e => setItems(rows => rows.map(row => row.id === item.id ? { ...row, name: e.target.value } : row))} />
-                  <div className="admin-item-inline">
-                    <input aria-label="이미지 파일 교체" type="file" accept="image/png" onChange={e => uploadExistingImage(item.id, e)} />
-                    <input aria-label="확률" type="number" min="0" max="100" step="0.001" value={item.probability} onChange={e => setItems(rows => rows.map(row => row.id === item.id ? { ...row, probability: e.target.value } : row))} />
-                  </div>
-                  <small>{GACHA_LABELS.find(g => g[0] === item.gacha_key)?.[1]} · {item.rarity}</small>
-                </div>
-                <div className="admin-item-actions">
-                  <button title="저장" onClick={() => saveItem(item)} disabled={savingItem}><Check size={16} /></button>
-                  <button title="삭제" onClick={() => deleteItem(item.id)}><Trash2 size={16} /></button>
-                </div>
-              </div>)}
-              {!items.length && <div className="empty-state small-empty">등록된 상품이 없습니다.</div>}
+            <div className="admin-gacha-groups">
+              {GACHA_LABELS.map(([gachaKey, gachaName]) => {
+                const groupItems = items.filter(item => item.gacha_key === gachaKey);
+                return (
+                  <section className="admin-gacha-group" key={gachaKey}>
+                    <div className="admin-section-title">
+                      <div><h3>{gachaName}</h3><p>등록된 상품 {groupItems.length}개</p></div>
+                      <b>{Number(probabilityTotals[gachaKey] || 0).toFixed(3)}%</b>
+                    </div>
+                    <div className="admin-item-list">
+                      {groupItems.map(item => <div className="admin-item-row" key={item.id}>
+                        <div className="admin-item-thumb">{item.image_url ? <img src={item.image_url} alt="" /> : <Gift size={20} />}</div>
+                        <div className="admin-item-fields">
+                          <input aria-label="상품명" value={item.name} onChange={e => setItems(rows => rows.map(row => row.id === item.id ? { ...row, name: e.target.value } : row))} />
+                          <div className="admin-item-inline">
+                            <input aria-label="이미지 파일 교체" type="file" accept="image/png" onChange={e => uploadExistingImage(item.id, e)} />
+                            <input aria-label="확률" type="number" min="0" max="100" step="0.001" value={item.probability} onChange={e => setItems(rows => rows.map(row => row.id === item.id ? { ...row, probability: e.target.value } : row))} />
+                          </div>
+                          <small>{item.rarity}</small>
+                        </div>
+                        <div className="admin-item-actions">
+                          <button title="저장" onClick={() => saveItem(item)} disabled={savingItem}><Check size={16} /></button>
+                          <button title="삭제" onClick={() => deleteItem(item.id)}><Trash2 size={16} /></button>
+                        </div>
+                      </div>)}
+                      {!groupItems.length && <div className="empty-state small-empty">이 가챠에 등록된 상품이 없습니다.</div>}
+                    </div>
+                  </section>
+                );
+              })}
             </div>
           </div>
         </section>
