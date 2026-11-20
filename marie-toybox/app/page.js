@@ -16,6 +16,11 @@ const GACHA_LABELS = [
   ['profile-frame', '프로필 테두리', '나만의 프로필 장식 액자'],
 ];
 
+const RARITY_ORDER = ['일반', '레어', '에픽', '유니크', '시크릿'];
+const sortByRarity = items => [...items].sort(
+  (a, b) => RARITY_ORDER.indexOf(a.rarity || '일반') - RARITY_ORDER.indexOf(b.rarity || '일반')
+);
+
 async function api(url, options = {}) {
   const response = await fetch(url, {
     ...options,
@@ -390,9 +395,9 @@ async function handleExistingItemImage(id, event) {
           <p className="modal-intro">아직 만나지 못한 장난감은 물음표로 남아 있어요.</p>
           {collection ? <><div className="collection-progress"><div className="progress-track"><span style={{ width: `${collection.total ? collection.collected / collection.total * 100 : 0}%` }} /></div><b>{collection.collected} / {collection.total}</b></div>
 {GACHA_LABELS.map(([key, name]) => {
-  const items = collection.items.filter(
+  const items = sortByRarity(collection.items.filter(
     item => item.gacha_key === key
-  );
+  ));
 
   if (!items.length) return null;
 
