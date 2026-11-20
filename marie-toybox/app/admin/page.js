@@ -39,7 +39,6 @@ export default function AdminPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [items, setItems] = useState([]);
-  const [topups, setTopups] = useState([]);
   const [draft, setDraft] = useState({ gacha_key: 'christmas-gift', name: '', description: '', image_url: '', probability: '0', rarity: '일반', sort_order: '0' });
   const [busy, setBusy] = useState(false);
   const [savingItem, setSavingItem] = useState(false);
@@ -48,19 +47,17 @@ export default function AdminPage() {
   const [notice, setNotice] = useState('');
 
   const loadAdminData = useCallback(async () => {
-    const [itemsData, topupData] = await Promise.all([api('/api/admin/items'), api('/api/admin/topups')]);
+    const itemsData = await api('/api/admin/items');
     setItems(itemsData.items || []);
-    setTopups(topupData.requests || []);
     setAuthorized(true);
   }, []);
 
   useEffect(() => {
     let active = true;
-    Promise.all([api('/api/admin/items'), api('/api/admin/topups')])
-      .then(([itemsData, topupData]) => {
+    api('/api/admin/items')
+      .then((itemsData) => {
         if (!active) return;
         setItems(itemsData.items || []);
-        setTopups(topupData.requests || []);
         setAuthorized(true);
       })
       .catch(() => { if (active) setAuthorized(false); })
@@ -88,7 +85,6 @@ export default function AdminPage() {
     finally {
       setAuthorized(false);
       setItems([]);
-      setTopups([]);
       window.location.href = '/';
     }
   }
@@ -146,14 +142,6 @@ export default function AdminPage() {
       await api('/api/admin/items', { method: 'DELETE', body: JSON.stringify({ id }) });
       setItems(rows => rows.filter(row => row.id !== id));
       setNotice('상품을 삭제했어요.');
-    } catch (e) { setNotice(e.message); }
-  }
-
-  async function reviewTopup(id, status) {
-    try {
-      await api('/api/admin/topups', { method: 'PATCH', body: JSON.stringify({ id, status }) });
-      await loadAdminData();
-      setNotice('충전 신청을 처리했어요.');
     } catch (e) { setNotice(e.message); }
   }
 
@@ -224,18 +212,6 @@ export default function AdminPage() {
                 </div>
               </div>)}
               {!items.length && <div className="empty-state small-empty">등록된 상품이 없습니다.</div>}
-            </div>
-          </div>
-
-          <div className="admin-section">
-            <div className="admin-section-title"><div><h3>포인트 충전 승인</h3><p>승인하면 신청한 회원의 포인트가 추가됩니다.</p></div><span className="pending-count">대기 {topups.filter(t => t.status === 'pending').length}건</span></div>
-            <div className="topup-admin-list">
-              {topups.map(row => <div className="topup-admin-row" key={row.id}>
-                <div><b>{row.nickname}</b><small>{new Date(row.created_at).toLocaleString('ko-KR')}</small></div>
-                <strong>{formatNumber(row.amount_points)}P</strong>
-                {row.status === 'pending' ? <div className="review-actions"><button className="approve-button" onClick={() => reviewTopup(row.id, 'approved')}>승인</button><button className="reject-button" onClick={() => reviewTopup(row.id, 'rejected')}>거절</button></div> : <span className={`status-label ${row.status}`}>{row.status === 'approved' ? '승인 완료' : '거절됨'}</span>}
-              </div>)}
-              {!topups.length && <div className="empty-state small-empty">충전 신청이 없습니다.</div>}
             </div>
           </div>
         </section>
