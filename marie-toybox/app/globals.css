@@ -549,3 +549,82 @@ body,
   background-color: #FFF8EF !important;
   background-image: none !important;
 }
+
+
+/* 상단 바를 본문 박스와 같은 폭으로 정렬 */
+.topbar {
+  width: min(1220px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 20px 0 0;
+  justify-content: space-between;
+  gap: 12px;
+}
+.topbar .hero-greeting {
+  width: auto;
+  margin: 0;
+  text-align: left;
+}
+.topbar .account-tools {
+  width: auto;
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
+/* 관리자 설정은 우측 하단에 독립 배치 */
+.admin-fab {
+  position: fixed;
+  z-index: 70;
+  right: 22px;
+  bottom: 22px;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #d6b88d;
+  border-radius: 50%;
+  color: #886e57;
+  background: #fffaf2;
+  box-shadow: 0 5px 16px rgba(83,43,33,.14);
+  cursor: pointer;
+  transition: transform .15s, border-color .15s, color .15s;
+}
+.admin-fab:hover {
+  transform: translateY(-2px);
+  color: var(--wine);
+  border-color: #c58f63;
+}
+
+@media (max-width: 720px) {
+  .topbar {
+    width: calc(100% - 28px);
+    margin: 0 auto;
+    padding: 10px 0;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  .topbar .hero-greeting {
+    width: auto;
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+  }
+  .topbar .account-tools {
+    width: auto;
+    flex: 0 0 auto;
+    margin-left: auto;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .topbar .mini-balance {
+    white-space: nowrap;
+  }
+  .admin-fab {
+    right: 16px;
+    bottom: 16px;
+    width: 42px;
+    height: 42px;
+  }
+}
