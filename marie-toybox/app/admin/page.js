@@ -226,9 +226,7 @@ export default function AdminPage() {
                 <div className="admin-item-thumb">{item.image_url ? <img src={item.image_url} alt="" /> : <Gift size={20} />}</div>
                 <div className="admin-item-fields">
                   <strong className="admin-item-name">{item.name}</strong>
-                  <div className="admin-item-inline">
-                    <span className="admin-item-fixed">확률 {Number(item.probability || 0)}%</span>
-                    <span className="admin-item-fixed">등급</span>
+                  <div className="admin-item-meta">
                     <select aria-label="상품 등급" value={RARITY_PROBABILITY[item.rarity] !== undefined ? item.rarity : '__legacy__'} onChange={e => {
                       const rarity = e.target.value;
                       if (rarity === '__legacy__') return;
@@ -237,6 +235,7 @@ export default function AdminPage() {
                       {RARITY_PROBABILITY[item.rarity] === undefined && <option value="__legacy__">{item.rarity || '등급 선택'}</option>}
                       {RARITY_OPTIONS.map(([name]) => <option key={name} value={name}>{name}</option>)}
                     </select>
+                    <span className="admin-item-fixed">{Number(item.probability || 0)}%</span>
                   </div>
                 </div>
                 <div className="admin-item-actions">
