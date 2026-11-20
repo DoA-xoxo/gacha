@@ -71,14 +71,12 @@ export default function Home() {
   const [drawResult, setDrawResult] = useState(null);
   const [drawing, setDrawing] = useState(false);
   const [collection, setCollection] = useState(null);
-  const [topupValue, setTopupValue] = useState('100');
   const [convertValue, setConvertValue] = useState('100');
   const [nicknameValue, setNicknameValue] = useState('');
   const [notice, setNotice] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
   const [adminError, setAdminError] = useState('');
   const [adminItems, setAdminItems] = useState([]);
-  const [topups, setTopups] = useState([]);
   const [adminDraft, setAdminDraft] = useState({ gacha_key: 'christmas-gift', name: '', description: '', image_url: '', probability: '0', rarity: '일반', sort_order: '0' });
   const [savingItem, setSavingItem] = useState(false);
 
@@ -159,14 +157,6 @@ function downloadItemPng(item) {
     finally { setDrawing(false); }
   }
 
-  async function sendTopup(event) {
-    event.preventDefault(); setBusy(true);
-    try {
-      const result = await api('/api/topup', { method: 'POST', body: JSON.stringify({ points: Number(topupValue) }) });
-      setNotice(result.message); setModal('');
-    } catch (error) { setNotice(error.message); }
-    finally { setBusy(false); }
-  }
 
   async function convertPoints(event) {
     event.preventDefault(); setBusy(true);
@@ -198,8 +188,8 @@ function downloadItemPng(item) {
     finally { setBusy(false); }
   }
   async function loadAdminData() {
-    const [itemsData, topupData] = await Promise.all([api('/api/admin/items'), api('/api/admin/topups')]);
-    setAdminItems(itemsData.items); setTopups(topupData.requests);
+    const itemsData = await api('/api/admin/items');
+    setAdminItems(itemsData.items);
   }
   async function adminLogout() {
     await api('/api/admin/logout', { method: 'POST' }); setModal('');
@@ -262,10 +252,7 @@ async function handleExistingItemImage(id, event) {
     try { await api('/api/admin/items', { method: 'DELETE', body: JSON.stringify({ id }) }); setAdminItems(rows => rows.filter(row => row.id !== id)); }
     catch (error) { setNotice(error.message); }
   }
-  async function reviewTopup(id, status) {
-    try { await api('/api/admin/topups', { method: 'PATCH', body: JSON.stringify({ id, status }) }); await loadAdminData(); setNotice('충전 신청을 처리했어요.'); }
-    catch (error) { setNotice(error.message); }
-  }
+
   const updateAdminLocal = (id, patch) => setAdminItems(rows => rows.map(row => row.id === id ? { ...row, ...patch } : row));
 
   const probabilityTotals = useMemo(() => Object.fromEntries(GACHA_LABELS.map(([key]) => [key, adminItems.filter(item => item.gacha_key === key && item.is_active).reduce((sum, item) => sum + Number(item.probability || 0), 0)])), [adminItems]);
@@ -389,7 +376,7 @@ async function handleExistingItemImage(id, event) {
             <div className="draw-machine"><img src={activeGacha.asset} alt={`${activeGacha.name} 머신`} /></div>
             <div className="draw-balance"><span><Coins size={15} /> 보유 토큰 <b>{formatNumber(user.tokens)}T</b></span><small>1회 뽑기 1T · 10회 뽑기 10T</small></div>
             <div className="draw-buttons"><button className="primary-button" disabled={drawing || user.tokens < 1} onClick={() => runDraw(1)}>{drawing ? '뽑는 중...' : '1회 뽑기 · 1T'}</button><button className="gold-button" disabled={drawing || user.tokens < 10} onClick={() => runDraw(10)}>{drawing ? '뽑는 중...' : '10회 뽑기 · 10T'}</button></div>
-            {user.tokens < 10 && <p className="field-hint">토큰이 부족하다면 포인트 상점에서 충전 신청 또는 교환을 해 주세요.</p>}
+            {user.tokens < 10 && <p className="field-hint">토큰이 부족하다면 포인트를 토큰으로 교환해 주세요.</p>}
           </> : <>
             <div className="result-heading"><span>✦</span><b>{drawResult.items.length}개의 장난감을 만났어요!</b><span>✦</span></div>
             <div className={`result-grid ${drawResult.items.length === 1 ? 'single' : ''}`}>{drawResult.items.map((item, index) => <div className="result-item" key={`${item.id}-${index}`}><ItemImage src={item.image_url} name={item.name} /><b>{item.name}</b><small>{item.rarity}</small></div>)}</div>
@@ -461,9 +448,7 @@ async function handleExistingItemImage(id, event) {
         </section>}
 
         {modal === 'topup' && <section className="modal-card compact-modal" role="dialog" aria-modal="true">
-          <button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="modal-ribbon">POINT SALON</div><p className="eyebrow">A LITTLE MAGIC FOR YOUR TOYS</p><h2>포인트 상점</h2><p className="modal-intro">충전 신청이 승인되면 포인트가 반영돼요.</p>
-          <form className="shop-form" onSubmit={sendTopup}><label>충전 신청 포인트<input type="number" min="10" max="10000000" step="10" value={topupValue} onChange={e => setTopupValue(e.target.value)} required /></label><div className="shop-note"><Star size={15} /> 신청 후 관리자 승인 시 <b>{formatNumber(topupValue || 0)}P</b> 지급</div><button className="primary-button full-button" disabled={busy}>충전 신청하기</button></form>
-          <div className="modal-divider"><span>POINT → TOKEN</span></div>
+          <button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="modal-ribbon">POINT SALON</div><p className="eyebrow">A LITTLE MAGIC FOR YOUR TOYS</p><h2>포인트 교환소</h2><p className="modal-intro">세 사이트에서 함께 사용하는 공통 포인트를 토큰으로 교환해요.</p>
           <form className="shop-form" onSubmit={convertPoints}><label>교환할 포인트<input type="number" min="10" step="10" value={convertValue} onChange={e => setConvertValue(e.target.value)} required /></label><div className="shop-note"><ArrowLeftRight size={15} /> {formatNumber(convertValue || 0)}P → <b>{formatNumber(Math.floor(Number(convertValue || 0) / 10))}T</b></div><button className="gold-button full-button" disabled={busy || Number(convertValue) % 10 !== 0 || Number(convertValue) <= 0}>토큰으로 교환하기</button><p className="field-hint">10포인트당 1토큰으로 교환할 수 있어요. 교환한 토큰은 되돌릴 수 없어요.</p></form>
         </section>}
 
