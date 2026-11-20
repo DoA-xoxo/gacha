@@ -14,9 +14,9 @@ const GACHA_LABELS = [
 
 const RARITY_OPTIONS = [
   ['일반', 15],
-  ['레어', 5],
-  ['에픽', 4],
-  ['유니크', 10],
+  ['레어', 10],
+  ['에픽', 5],
+  ['유니크', 4],
   ['시크릿', 1],
 ];
 const RARITY_PROBABILITY = Object.fromEntries(RARITY_OPTIONS);
