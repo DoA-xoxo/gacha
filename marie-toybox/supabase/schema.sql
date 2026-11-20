@@ -174,8 +174,8 @@ begin
   if p_count = 10 then
     select exists (
       select 1
-      from unnest(v_picked_ids) as picked_id
-      join public.gacha_items i on i.id = picked_id
+      from unnest(v_picked_ids) as picked(picked_id)
+      join public.gacha_items i on i.id = picked.picked_id
       where i.rarity in ('레어', '에픽', '시크릿')
     ) into v_has_high_rarity;
 
