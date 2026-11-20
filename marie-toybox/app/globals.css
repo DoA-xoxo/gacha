@@ -628,3 +628,76 @@ body,
     height: 42px;
   }
 }
+
+
+/* 관리자 가챠 선택 영역: 선택 메뉴와 확률 정보를 여유 있게 분리 */
+.admin-gacha-filter {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, .7fr);
+  align-items: end;
+  gap: 18px;
+  margin: 20px 0 18px;
+}
+.admin-gacha-filter > label {
+  display: grid;
+  gap: 9px;
+  color: #80624f;
+  font-size: 11px;
+  font-weight: 700;
+}
+.admin-gacha-filter select {
+  width: 100%;
+  height: 44px;
+  padding: 0 42px 0 13px;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid #d8bd98;
+  border-radius: 3px;
+  outline: 0;
+  color: #70483d;
+  background-color: #fffaf2;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2399703b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  font-size: 12px;
+  cursor: pointer;
+}
+.admin-gacha-filter select:focus {
+  border-color: #b98b57;
+  box-shadow: 0 0 0 3px rgba(199,154,87,.13);
+}
+.admin-gacha-total {
+  min-height: 65px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-content: center;
+  gap: 5px 12px;
+  padding: 10px 14px;
+  border: 1px solid #e5d2b9;
+  background: #fffaf3;
+}
+.admin-gacha-total > span {
+  color: #947b6d;
+  font-size: 10px;
+}
+.admin-gacha-total > b {
+  font: 700 14px 'DM Sans', sans-serif;
+}
+.admin-gacha-total > small {
+  grid-column: 1 / -1;
+  color: #a18a72;
+  font-size: 9px;
+}
+@media (max-width: 720px) {
+  .admin-gacha-filter {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin: 18px 0 16px;
+  }
+  .admin-gacha-filter > label {
+    gap: 8px;
+  }
+  .admin-gacha-total {
+    min-height: 60px;
+  }
+}
