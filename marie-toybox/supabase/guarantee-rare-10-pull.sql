@@ -1,5 +1,5 @@
--- 10연차에서 레어/에픽/시크릿 중 최소 1개 보장
--- 레어 이상 활성 상품이 없으면 토큰 차감 전에 요청을 중단합니다.
+-- 10연차에서 에픽/유니크/시크릿 중 최소 1개 보장
+-- 에픽 이상 활성 상품이 없으면 토큰 차감 전에 요청을 중단합니다.
 
 create or replace function public.draw_toys(
   p_user_id uuid,
@@ -54,9 +54,9 @@ begin
     select coalesce(sum(probability), 0) into v_high_total
       from public.gacha_items
       where gacha_key = p_gacha_key and is_active = true
-        and probability > 0 and rarity in ('레어', '에픽', '시크릿');
+        and probability > 0 and rarity in ('에픽', '유니크', '시크릿');
     if v_high_total <= 0 then
-      raise exception '레어 이상 상품이 등록되어 있지 않아 10연차를 진행할 수 없습니다.';
+      raise exception '에픽 이상 상품이 등록되어 있지 않아 10연차를 진행할 수 없습니다.';
     end if;
   end if;
 
@@ -88,7 +88,7 @@ begin
     select exists (
       select 1 from unnest(v_picked_ids) as picked(picked_id)
       join public.gacha_items i on i.id = picked.picked_id
-      where i.rarity in ('레어', '에픽', '시크릿')
+      where i.rarity in ('에픽', '유니크', '시크릿')
     ) into v_has_high_rarity;
 
     if not v_has_high_rarity then
@@ -98,7 +98,7 @@ begin
         select id, sum(probability) over (order by sort_order, created_at, id) as cumulative_probability
         from public.gacha_items
         where gacha_key = p_gacha_key and is_active = true
-          and probability > 0 and rarity in ('레어', '에픽', '시크릿')
+          and probability > 0 and rarity in ('에픽', '유니크', '시크릿')
       ) as picked
       where picked.cumulative_probability >= v_roll
       order by picked.cumulative_probability
@@ -107,7 +107,7 @@ begin
       if v_item_id is null then
         select id into v_item_id from public.gacha_items
         where gacha_key = p_gacha_key and is_active = true
-          and probability > 0 and rarity in ('레어', '에픽', '시크릿')
+          and probability > 0 and rarity in ('에픽', '유니크', '시크릿')
         order by sort_order desc, created_at desc limit 1;
       end if;
 
