@@ -379,13 +379,13 @@ async function handleExistingItemImage(id, event) {
           <p className="eyebrow">A LITTLE SURPRISE</p><h2>{activeGacha.name}</h2><p className="modal-intro">반짝이는 캡슐 속에서 어떤 친구가 나올까요?</p>
           {!drawResult ? <>
             <div className="draw-machine"><img src={activeGacha.asset} alt={`${activeGacha.name} 머신`} /></div>
-            <div className="draw-balance"><span><Coins size={15} /> 보유 토큰 <b>{formatNumber(user.tokens)}T</b></span><small>1 회 뽑기 1 T · 10 회 뽑기 10 T</small></div>
+            <div className="draw-balance"><span><Coins size={15} /> 보유 토큰 <b>{formatNumber(user.tokens)} T</b></span><small>1 회 뽑기 1 T · 10 회 뽑기 10 T</small></div>
             <div className="draw-buttons"><button className="primary-button" disabled={drawing || user.tokens < 1} onClick={() => runDraw(1)}>{drawing ? '뽑는 중...' : '1 회 뽑기 · 1 T'}</button><button className="gold-button" disabled={drawing || user.tokens < 10} onClick={() => runDraw(10)}>{drawing ? '뽑는 중...' : '10 회 뽑기 · 10 T'}</button></div>
             {user.tokens < 10 && <p className="field-hint">토큰이 부족하다면 포인트를 토큰으로 교환해 주세요.</p>}
           </> : <>
             <div className="result-heading"><span>✦</span><b>{drawResult.items.length} 개의 장난감을 만났어요!</b><span>✦</span></div>
             <div className={`result-grid ${drawResult.items.length === 1 ? 'single' : ''}`}>{drawResult.items.map((item, index) => <div className="result-item" key={`${item.id}-${index}`}><ItemImage src={item.image_url} name={item.name} /><b>{item.name}</b><small>{item.rarity}</small></div>)}</div>
-            <p className="result-balance">남은 토큰 <b>{formatNumber(drawResult.tokens)}T</b></p>
+            <p className="result-balance">남은 토큰 <b>{formatNumber(drawResult.tokens)} T</b></p>
             <button className="primary-button full-button" onClick={() => { setDrawResult(null); setModal(''); }}>상자에 담기</button>
           </>}
         </section>}
