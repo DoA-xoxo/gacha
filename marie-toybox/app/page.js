@@ -364,7 +364,7 @@ async function handleExistingItemImage(id, event) {
               <div className="machine-number">TOY GACHA · 0{index + 1}</div>
               <div className="machine-art-wrap"><img src={gacha.asset} alt={`${gacha.name} 캡슐 머신`} /></div>
               <div className="machine-info"><span className="machine-title">{gacha.name}</span><small>{gacha.subtitle || GACHA_LABELS[index]?.[2]}</small></div>
-              {unlocked ? <span className="machine-status open"><Sparkles size={12} /> OPEN · 상품 {count}종</span> : <span className="machine-status locked"><LockKeyhole size={12} /> {dateText(unlockAt(startDate, gacha.day))} 해금</span>}
+              {unlocked ? <span className="machine-status open"><Sparkles size={12} /> OPEN · 상품 {count} 종</span> : <span className="machine-status locked"><LockKeyhole size={12} /> {dateText(unlockAt(startDate, gacha.day))} 해금</span>}
             </button>
           );
         })}
@@ -379,11 +379,11 @@ async function handleExistingItemImage(id, event) {
           <p className="eyebrow">A LITTLE SURPRISE</p><h2>{activeGacha.name}</h2><p className="modal-intro">반짝이는 캡슐 속에서 어떤 친구가 나올까요?</p>
           {!drawResult ? <>
             <div className="draw-machine"><img src={activeGacha.asset} alt={`${activeGacha.name} 머신`} /></div>
-            <div className="draw-balance"><span><Coins size={15} /> 보유 토큰 <b>{formatNumber(user.tokens)}T</b></span><small>1회 뽑기 1T · 10회 뽑기 10T</small></div>
+            <div className="draw-balance"><span><Coins size={15} /> 보유 토큰 <b>{formatNumber(user.tokens)}T</b></span><small>1 회 뽑기 1 T · 10 회 뽑기 10 T</small></div>
             <div className="draw-buttons"><button className="primary-button" disabled={drawing || user.tokens < 1} onClick={() => runDraw(1)}>{drawing ? '뽑는 중...' : '1회 뽑기 · 1T'}</button><button className="gold-button" disabled={drawing || user.tokens < 10} onClick={() => runDraw(10)}>{drawing ? '뽑는 중...' : '10회 뽑기 · 10T'}</button></div>
             {user.tokens < 10 && <p className="field-hint">토큰이 부족하다면 포인트를 토큰으로 교환해 주세요.</p>}
           </> : <>
-            <div className="result-heading"><span>✦</span><b>{drawResult.items.length}개의 장난감을 만났어요!</b><span>✦</span></div>
+            <div className="result-heading"><span>✦</span><b>{drawResult.items.length} 개의 장난감을 만났어요!</b><span>✦</span></div>
             <div className={`result-grid ${drawResult.items.length === 1 ? 'single' : ''}`}>{drawResult.items.map((item, index) => <div className="result-item" key={`${item.id}-${index}`}><ItemImage src={item.image_url} name={item.name} /><b>{item.name}</b><small>{item.rarity}</small></div>)}</div>
             <p className="result-balance">남은 토큰 <b>{formatNumber(drawResult.tokens)}T</b></p>
             <button className="primary-button full-button" onClick={() => { setDrawResult(null); setModal(''); }}>상자에 담기</button>
@@ -455,7 +455,7 @@ async function handleExistingItemImage(id, event) {
 
         {modal === 'topup' && <section className="modal-card compact-modal" role="dialog" aria-modal="true">
           <button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="modal-ribbon">POINT SALON</div><p className="eyebrow">A LITTLE MAGIC FOR YOUR TOYS</p><h2>포인트 교환소</h2><p className="modal-intro">세 사이트에서 함께 사용하는 공통 포인트를 토큰으로 교환해요.</p>
-          <form className="shop-form" onSubmit={convertPoints}><label>교환할 포인트<input type="number" min="10" step="10" value={convertValue} onChange={e => setConvertValue(e.target.value)} required /></label><div className="shop-note"><ArrowLeftRight size={15} /> {formatNumber(convertValue || 0)}P → <b>{formatNumber(Math.floor(Number(convertValue || 0) / 10))}T</b></div><button className="gold-button full-button" disabled={busy || Number(convertValue) % 10 !== 0 || Number(convertValue) <= 0}>토큰으로 교환하기</button><p className="field-hint">10포인트당 1토큰으로 교환할 수 있어요. 교환한 토큰은 되돌릴 수 없어요.</p></form>
+          <form className="shop-form" onSubmit={convertPoints}><label>교환할 포인트<input type="number" min="10" step="10" value={convertValue} onChange={e => setConvertValue(e.target.value)} required /></label><div className="shop-note"><ArrowLeftRight size={15} /> {formatNumber(convertValue || 0)} P → <b>{formatNumber(Math.floor(Number(convertValue || 0) / 10))} T</b></div><button className="gold-button full-button" disabled={busy || Number(convertValue) % 10 !== 0 || Number(convertValue) <= 0}>토큰으로 교환하기</button><p className="field-hint">10 포인트당 1 토큰으로 교환할 수 있어요. 교환한 토큰은 되돌릴 수 없어요.</p></form>
         </section>}
 
         {modal === 'nickname' && <section className="modal-card compact-modal" role="dialog" aria-modal="true"><button className="modal-close" onClick={() => setModal('')}><X size={18} /></button><div className="modal-ribbon">A NEW NAME</div><p className="eyebrow">YOUR LITTLE IDENTITY</p><h2>닉네임 변경</h2><form className="shop-form" onSubmit={changeNickname}><label>현재 닉네임<input value={user.nickname} readOnly /></label><label>변경할 닉네임<input value={nicknameValue} maxLength={20} onChange={e => setNicknameValue(e.target.value)} placeholder="새로운 닉네임" required /></label><p className="field-hint">변경한 아이디는 기존 사이트에도 적용되며, 도감과 포인트·토큰은 그대로 유지돼요.</p><button className="primary-button full-button" disabled={busy}>변경하기</button></form></section>}
