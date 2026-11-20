@@ -415,6 +415,7 @@ async function handleExistingItemImage(id, event) {
               <>
                 <ItemImage src={item.image_url} name={item.name} />
                 <b>{item.name}</b>
+                <small className="collection-rarity">{item.rarity || '일반'}</small>
 
                 {item.collection.quantity > 1 && (
                   <small>×{item.collection.quantity}</small>
