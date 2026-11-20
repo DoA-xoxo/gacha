@@ -143,9 +143,9 @@ begin
       where gacha_key = p_gacha_key
         and is_active = true
         and probability > 0
-        and rarity in ('레어', '에픽', '시크릿');
+        and rarity in ('에픽', '유니크', '시크릿');
     if v_high_total <= 0 then
-      raise exception '레어 이상 상품이 등록되어 있지 않아 10연차를 진행할 수 없습니다.';
+      raise exception '에픽 이상 상품이 등록되어 있지 않아 10연차를 진행할 수 없습니다.';
     end if;
   end if;
 
@@ -178,7 +178,7 @@ begin
       select 1
       from unnest(v_picked_ids) as picked(picked_id)
       join public.gacha_items i on i.id = picked.picked_id
-      where i.rarity in ('레어', '에픽', '시크릿')
+      where i.rarity in ('에픽', '유니크', '시크릿')
     ) into v_has_high_rarity;
 
     if not v_has_high_rarity then
@@ -190,7 +190,7 @@ begin
         where gacha_key = p_gacha_key
           and is_active = true
           and probability > 0
-          and rarity in ('레어', '에픽', '시크릿')
+          and rarity in ('에픽', '유니크', '시크릿')
       ) as picked
       where picked.cumulative_probability >= v_roll
       order by picked.cumulative_probability
@@ -202,7 +202,7 @@ begin
         where gacha_key = p_gacha_key
           and is_active = true
           and probability > 0
-          and rarity in ('레어', '에픽', '시크릿')
+          and rarity in ('에픽', '유니크', '시크릿')
         order by sort_order desc, created_at desc
         limit 1;
       end if;
