@@ -386,7 +386,10 @@ async function handleExistingItemImage(id, event) {
             <div className="result-heading"><span>✦</span><b>{drawResult.items.length} 개의 장난감을 만났어요!</b><span>✦</span></div>
             <div className={`result-grid ${drawResult.items.length === 1 ? 'single' : ''}`}>{drawResult.items.map((item, index) => <div className="result-item" key={`${item.id}-${index}`}><ItemImage src={item.image_url} name={item.name} /><b>{item.name}</b><small>{item.rarity}</small></div>)}</div>
             <p className="result-balance">남은 토큰 <b>{formatNumber(drawResult.tokens)} T</b></p>
-            <button className="primary-button full-button" onClick={() => { setDrawResult(null); setModal(''); }}>상자에 담기</button>
+            <div className="draw-buttons result-actions">
+              <button className="gold-button" disabled={drawing || user.tokens < 10} onClick={() => runDraw(10)}>{drawing ? '뽑는 중...' : '10 회 뽑기 · 10 T'}</button>
+              <button className="primary-button" onClick={() => { setDrawResult(null); setModal(''); }}>상자에 담기</button>
+            </div>
           </>}
         </section>}
 
