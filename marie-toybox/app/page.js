@@ -334,7 +334,7 @@ async function handleExistingItemImage(id, event) {
         <div className="currency-group">
           <div className="currency-card"><span className="currency-icon points"><Star size={16} fill="currentColor" /></span><small>보유 포인트</small><b>{formatNumber(user.points)} P</b></div>
           <div className="currency-card"><span className="currency-icon tokens"><Coins size={16} /></span><small>보유 토큰</small><b>{formatNumber(user.tokens)} T</b></div>
-          <button className="text-action" onClick={() => setModal('topup')}>충전 / 교환 <ArrowLeftRight size={14} /></button>
+          <button className="text-action" onClick={() => setModal('topup')}>토큰 교환 <ArrowLeftRight size={14} /></button>
         </div>
       </section>
 
