@@ -116,11 +116,13 @@ begin
   if p_count not in (1, 10) then raise exception '1회 또는 10회 뽑기만 가능합니다.'; end if;
   v_unlock_day := case p_gacha_key
     when 'christmas-gift' then 0 when 'toy-kingdom' then 2 when 'sugar-shop' then 4
-    when 'mouse-kingdom' then 6 when 'winter-warmth' then 8 when 'profile-frame' then 10
+    when 'mouse-kingdom' then 6 when 'winter-warmth' then 8 when 'profile-frame' then 0
     else null end;
   if v_unlock_day is null then raise exception '존재하지 않는 가챠입니다.'; end if;
   v_elapsed := (timezone('Asia/Seoul', now())::date - p_event_start_date);
-  if v_elapsed < v_unlock_day then raise exception '아직 해금되지 않은 가챠입니다.'; end if;
+  if p_gacha_key <> 'profile-frame' and v_elapsed < v_unlock_day then
+    raise exception '아직 해금되지 않은 가챠입니다.';
+  end if;
 
   select * into v_profile from public.user_profiles where id = p_user_id for update;
   if not found then raise exception '회원 정보를 찾을 수 없습니다.'; end if;
