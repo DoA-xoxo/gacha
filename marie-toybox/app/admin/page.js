@@ -225,19 +225,19 @@ export default function AdminPage() {
               {items.filter(item => item.gacha_key === selectedGacha).map(item => <div className="admin-item-row" key={item.id}>
                 <div className="admin-item-thumb">{item.image_url ? <img src={item.image_url} alt="" /> : <Gift size={20} />}</div>
                 <div className="admin-item-fields">
-                  <input aria-label="상품명" value={item.name} onChange={e => setItems(rows => rows.map(row => row.id === item.id ? { ...row, name: e.target.value } : row))} />
+                  <strong className="admin-item-name">{item.name}</strong>
                   <div className="admin-item-inline">
-                    <input aria-label="이미지 파일 교체" type="file" accept="image/png" onChange={e => uploadExistingImage(item.id, e)} />
-                    <input aria-label="확률 (%)" type="number" value={item.probability} readOnly />
+                    <span className="admin-item-fixed">확률 {Number(item.probability || 0)}%</span>
+                    <span className="admin-item-fixed">등급</span>
+                    <select aria-label="상품 등급" value={RARITY_PROBABILITY[item.rarity] !== undefined ? item.rarity : '__legacy__'} onChange={e => {
+                      const rarity = e.target.value;
+                      if (rarity === '__legacy__') return;
+                      setItems(rows => rows.map(row => row.id === item.id ? { ...row, rarity, probability: RARITY_PROBABILITY[rarity] } : row));
+                    }}>
+                      {RARITY_PROBABILITY[item.rarity] === undefined && <option value="__legacy__">{item.rarity || '등급 선택'}</option>}
+                      {RARITY_OPTIONS.map(([name]) => <option key={name} value={name}>{name}</option>)}
+                    </select>
                   </div>
-                  <select aria-label="상품 등급" value={RARITY_PROBABILITY[item.rarity] !== undefined ? item.rarity : '__legacy__'} onChange={e => {
-                    const rarity = e.target.value;
-                    if (rarity === '__legacy__') return;
-                    setItems(rows => rows.map(row => row.id === item.id ? { ...row, rarity, probability: RARITY_PROBABILITY[rarity] } : row));
-                  }}>
-                    {RARITY_PROBABILITY[item.rarity] === undefined && <option value="__legacy__">{item.rarity || '등급 선택'}</option>}
-                    {RARITY_OPTIONS.map(([name, probability]) => <option key={name} value={name}>{name}</option>)}
-                  </select>
                 </div>
                 <div className="admin-item-actions">
                   <button title="저장" onClick={() => saveItem(item)} disabled={savingItem}><Check size={16} /></button>
